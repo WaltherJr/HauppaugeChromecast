@@ -1,0 +1,38 @@
+
+$panel-height: 50px;
+
+#player-bottom-panel {
+  height: $panel-height;
+  display: flex;
+
+  google-cast-launcher {
+    display: initial !important;
+    --disconnected-color: white;     /* Color when not connected */
+    --connected-color: limegreen;    /* Color when connected */
+    --connecting-color: gold;        /* Color during connection */
+    --cast-button-width: 48px;
+    --cast-button-height: 48px;
+  }
+
+  div#player-controls {
+    display: flex;
+  }
+  div#player-controls > * {
+    flex: 1;
+  }
+  div#player-controls > #player-sound-controls {
+    flex: 2;
+  }
+}
+
+#player-bottom-panel > * {
+  display: block;
+}
+
+#player-bottom-panel > *:nth-child(1) {
+  flex: 1;
+}
+
+#player-bottom-panel > *:nth-child(3) {
+  flex: 2;
+}

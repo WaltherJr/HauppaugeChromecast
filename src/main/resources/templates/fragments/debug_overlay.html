@@ -1,0 +1,42 @@
+<th:block th:fragment="header">
+    <header id="debug-header">
+        <label>Chromecast URL:
+            <input id="chromecast-info-url" name="chromecast-info-url" type="url" value="http://192.168.31.242:8008/setup/eureka_info">
+        </label>
+        <button id="fetch-chromecast-info-btn">Fetch Chromecast info</button>
+        <div data-description="Chromecast video streaming">
+            <label>Video URL:
+            <select id="test-video-url">
+                <option value="https://examplefiles.org/files/video/mp4-example-video-download-full-hd-1920x1080.mp4">https://examplefiles.org/files/video/mp4-example-video-download-full-hd-1920x1080.mp4</option>
+                <option value="https://examplefiles.org/files/video/mp4-example-video-download-640x480.mp4">https://examplefiles.org/files/video/mp4-example-video-download-640x480.mp4</option>
+                <option value="http://192.168.31.248:8080/video/output.mp4" selected>http://192.168.31.248:8080/video/output.mp4</option>
+            </select></label>
+            <label for="test-video-mime-type" th:text="#{mime_type}"></label><input id="test-video-mime-type" type="text" value="video/mp4"></label>
+            <button id="load-test-video-btn">Stream test video to Chromecast</button>
+            <button id="load-allente-epg-btn">Load Allente EPG</button>
+            <input type="text" th:value="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy-MM-dd')}">
+            <input type="text" placeholder="00:00">
+            <button id="test-active-programme-btn" th:text="#{compute_current_channel_programmes}"></button>
+        </div>
+    </header>
+    <script>
+        document.getElementById("fetch-chromecast-info-btn").addEventListener("click", function() {
+            const chromecastInfoUrl = document.getElementById("chromecast-info-url").value;
+            fetch(`/chromecast-info?chromecast-info-url=${encodeURIComponent(chromecastInfoUrl)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();  // Assuming the response is in JSON format
+                })
+                .then(data => {
+                    console.log(data);  // Handle the data here
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+
+            alert("apas!");
+        });
+    </script>
+</th:block>

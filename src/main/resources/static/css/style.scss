@@ -1,0 +1,61 @@
+
+@use 'sass:color';
+@use 'base';
+@use 'popup';
+@use 'fragments';
+@use 'fragments/player-bottom-panel';
+
+.container {
+    display: flex;
+    flex-wrap: wrap; /* Allows columns to wrap on smaller screens */
+    justify-content: space-between;
+    padding: 20px;
+}
+
+#main-left-panel, #main-right-panel {
+    background-color: #f4f4f4;
+    border: 5px solid base.$color3;
+    margin: 10px; /* Adds spacing between columns */
+    border-radius: 8px;
+}
+
+#main-left-panel {
+    background-color: base.$color2;
+    flex: 1;
+}
+
+#main-right-panel {
+    background-color: base.$color2;
+    flex: 5;
+}
+
+p {
+    color: #666;
+}
+
+div[data-description] {
+  position: relative;
+  border-radius: 5px;
+  border: 3px solid gray;
+  padding: 7px 12px;
+}
+div[data-description]::before {
+  content: attr(data-description);
+  background-color: gainsboro;
+  position: absolute;
+  left: 20px;
+  top: -10px;
+}
+
+.main-right-panel > * {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+canvas {
+    background-color: gainsboro;
+    height: calc(100% - #{player-bottom-panel.$panel-height});
+    width: 100%;
+    box-sizing: border-box;
+}

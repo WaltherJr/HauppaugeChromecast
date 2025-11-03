@@ -1,0 +1,450 @@
+Kaffeine Changelog
+==================
+
+Version 2.0.19 (2024-11-06):
+
+-   Add a Dockerfile to allow building Kaffeine inside a container
+-   Add desktop file name to solid actions
+-   Add developer_name and launchable to appdata
+-   Add explicit moc includes to sources for moc-covered headers
+-   Add missing QActionGroup include
+-   Add missing QString include
+-   Add releases and content rating
+-   appdata: use canonical cdn screenshot location
+-   Call cmake_minimum_required as first thing (& bump to cmake 3.16)
+-   Changelog: fix some typos
+-   CMakeLists.txt: remove a warning
+-   Date: Use QLocale for date to string conversion
+-   Don't invoke XScreenSaverSuspend on Wayland
+-   Drop kdelirc profile
+-   dvb: add a descriptor parser for registration descriptor
+-   dvb: avoid warning when EAGAIN == EWOULDBLOCK
+-   dvbconfigdialog: increase max download size for scandata
+-   dvb: epg: add a warning if event lasts more than 24 hours
+-   dvb: fix QFlags() initialization
+-   dvb: re-write bcdToTime function
+-   dvbsi: improve stream type detection logic
+-   FindVLC.cmake: use <pkg>_VERSION over old <pkg>_VERSION_STRING pattern
+-   Fix activating existing window
+-   Fix minor EBN issues
+-   Fix releases
+-   Fix some warnings for random generator
+-   Fix translation handling on install
+-   Force creating the windowHandle before using it
+-   get rid of deprecated qrand() function
+-   i18n: reduce the string puzzles
+-   i18n: Replace I18N_NOOP() macro with KLazyLocalizedString kli18n()
+-   kio: Switch from generic to TransferJob
+-   KShortcuts: Use an persistant instance
+-   main: restore backward compat with  KF < 5.62
+-   mediawidget: don't keep screen saver suspended on exit
+-   mediawidget: mark override virtual functions as such
+-   mediawidget: use angleDelta() instead of delta()
+-   Port away from API deprecated in >KF-5.62
+-   Port away from deprecated KMessageBox::sorry
+-   Port away from deprecated KMessageBox Yes/No API
+-   QChar: Wrap to-assign content into QChar where necessary
+-   qt: replace QList::swap() by QList::swapItemsAt()
+-   Remove arcconfig
+-   Remove deprecated iterator usage, use std::prev insted
+-   Remove deprecated use od QScopedPtr.take()
+-   Remove explicit use of ECM_KDE_MODULE_DIR, is part of ECM_MODULE_PATH
+-   Remove releases with improper dates.
+-   Remove setting of Attribute AA_UseHighDpiPixmaps
+-   Remove use of QKeyCombination::operator()+, use operator()| instead
+-   Replace Qt sort and search APIs
+-   Replace std::endl by Qt::endl
+-   scantable.dvb: update it to the latest version
+-   src: mark several functions as override
+-   Some CI fixes
+-   StandardPaths: Replace QStandardPaths::DataLocation with AppLocalDataLocation
+-   Streams: Remove setCodec()
+-   Strings: Wrap raw content (string/number) in QLatin1String()/QString()
+-   Support FreeBSD-without-v4l, by using the include/dmx.h again
+-   Switch from QFlags to int implementation
+-   Time: switch from toTime_t() to toSecsSinceEpoch()
+-   travis: use Bionic instead of Xenial
+-   Update homepage and URL addresses
+-   update_l10n.sh: drop, obsolete
+-   Update scanfile.dvb
+-   Use non-deprecated KDEInstallDirs variables
+-   Use QProcess::setProgram()
+-   vlc: use Qt::SkipEmptyParts
+-   Widgets: Replace setMargin() with setContentsMargins()
+-   Widgets/Screensaver: Remove X11 screensaver fallback
+-   Widgets: Switch over Widget.data to .toStongRef().get()
+
+Version 2.0.18 (2019-05-14):
+
+-   Start using TravisCI for test builds
+-   mediawidget: Override DVD keys instead of changing their settings
+-   mediawidget: warn user to use keys for DVD menu
+-   mediawidget: remove a now unneeded check
+-   mediawidget: fix video position movement with mouse wheel
+-   mediawidget: fix the mouse wheel behavior at the streaming window
+-   vlc: with vlc 2.x, use vlcMedia for libvlc_MediaMetaChanged event
+-   vlc: fix support for vlc 2.x
+
+Version 2.0.17 (2019-05-01):
+-   Fix GCC 9 warningd (due to -Wdeprecated-copy)
+-   dvbtab: remove unused hide cursor logic
+-   dvbdevice: fix a race condition with frontend timeout
+-   dvbdevice_linux: improve some warning messages
+-   mediawidget: fix a regression with next/previous logic
+-   scanfile.dvb: update it to reflect last changes
+-   dvbepgdialog: allow showing channels with empty EPG
+-   index.docbook: some updates at the doc guide
+-   index.docbook: add documentation about XMLTV support
+-   Add support for reading EPG from xmltv files
+-   Add support for disabling MPEG-TS EPG reception
+-   README.md: add a quick description about xmltv
+-   dvbconfigdialog: remove an extra addLayout()
+-   iso-codes: add support for handling 2-letter codes as well
+-   dvbdevice_linux: remove unused frontendFd
+-   dvb: fix initialization for some objects
+-   backend-vlc: don't leak metadata
+-   backend-vlc: remove two temporary debug logs
+-   backend-vlc: only release libvlc_media_new() when stopped
+-   mediawidget: increase language popup size
+-   mediawidget: define a policy for the audio combo dropbox
+-   backend-vlc: ensure that audio stream will be a valid value
+-   backend-vlc: update metadata at stop()
+-   backend-vlc: release libvlc_media at destroy method
+-   backend-vlc: add other events to the list of possible types
+-   backend-vlc: simplify events handling logic
+-   backend-vlc: print unhandled libVLC events by name
+-   backend-vlc: update audio streams at metadata change
+-   mainwindow: associate control bar to main window widget
+-   backend-vlc: avoid memory leaks
+-   mainwindow: free configuration at exit
+-   mainwindow: better implement close event
+-   backend-vlc: don't leak timer at object destroy
+-   vlcmediawidget: properly initialize the class
+-   vlcmediawidget: initialize urlIsAudioCd and trackNumber variables
+-   backend-vlc: store current audio stream
+
+Version 2.0.16 (2019-01-14):
+-   Immediately apply the new audio language if the user changes it while
+    a channel is being playing;
+-   Fix audio language selection issues;
+-   Add support for "Original Language" for audio and sub-title descriptors;
+-   Add some new PMT stream_type identifiers in order to allow supporting
+    newer audio and video encoding types;
+-   Add support for High DPI pixel maps;
+-   Add a command line option to force an specific aspect ratio;
+-   Only read/write longitude/latitude from config files for USALS
+    satellite configurations;
+-   Add support for parallel instant records;
+-   Fix several issues related to audio CD playing;
+-   Update build instructions for Debian/Ubuntu and Fedora at README.md;
+-   Fix handling of command line arguments and describe the ones that
+    are mutually exclusive at the docs;
+-   Fix compilation issues and clean warnings when built with Clang;
+-   Fix compilation issues with qt5.11-rc2 and with FreeBSD;
+-   Some code cleanups and typo fixes.
+
+Version 2.0.15 (2018-05-01):
+
+-   Fix logic that handles ATSC EIT entries (regression fix);
+-   Auto-ride all bars when in minimal/full scree mode and mouse is out
+    of window;
+-   Allow better control of deinterlacing mode;
+-   Better handle higherVoltage settings, as it exists only for sattellite
+    TV delivery systems;
+-   Improve error handling when parsing config.dvb file;
+-   Change volume wheel logic to accept both point and angle-based volume
+    control, accepting it only when the mouse is under the media widget;
+-   Simplify the mouse hide logic;
+-   Fix DVD menu navigation by using the keyboard instead of the mouse
+    (as mouse control is incompatible with newer versions of Qt/libVLC);
+-   Fix handling of display mode, correcting some erratic behavior;
+-   Add options to start Kaffeine on minimal mode and/or with its main
+    window always on top;
+-   When a new record starts and there aren't enough resources to keep
+    playing the current DVB channel, switch to the new channel instead
+    of stop playing.
+-   Improve documentation to match the recent changes.
+
+Version 2.0.14 (2017-12-02):
+
+-   Add support for multi-language EPG;
+-   Jump to a position was not working, as it was lacking the Ok button;
+-   On minimal and full screen mode, auto-unride top menu bar and lateral DVB tab bar;
+-   The mouse wheel can now be used to control volume;
+-   Reduce button size at DVB tab, in order to allow showing a bigger playback window;
+-   Fix LNBf numbering and position at DiSEqC satellite configuration;
+-   Kaffeine's handbook now covers all menu bar items;
+-   Kaffeine's handbook was improved to contain more details about Digital TV settings;
+-   LNBf names at DVB satellite configuration are now using translations from libdvbv5;
+-   Get rid on two compilation warnings with gcc++ version 7.2;
+-   scanfile.dvb updated.
+
+Version 2.0.13 (2017-09-14):
+
+-   Add a logic to send LNBf higher voltage commands. That may be
+    needed on a few devices, if the antenna cabling is too long,
+    as, otherwise, polarity setting may not work (BUG#374693).
+-   Fix layer selection for ISDB-T;
+-   Improve README.md instructions;
+-   get rid of incomplete work (dtvdaemon);
+-   fix install dir on some distros;
+-   Shut up a gcc 7.1 warning;
+-   scanfile.dvb updated.
+
+Version 2.0.12.1 (2017-07-22):
+
+-   Minor change at git sources.
+
+Version 2.0.12 (2017-07-19):
+
+-   Update Changelog to reflect all changes since version 1.3.1.
+
+Version 2.0.11 (2017-07-19):
+
+-   Solve performance issues causing caffeine to use 100% CPU even when
+    video is paused or stopped;
+-   Fix DVB play on videos that use a separate PID for synchronism;
+-   Fix some bugs at DVB pause logic, making it more reliable and
+    making unpause to continue from the paused position;
+-   Disable debug messages by default;
+-   Remove a warning on some DVB streams when a program is not rated;
+-   Improve notes about video output settings at README.md.
+
+Version 2.0.10 (2017-06-29):
+
+-   Fix video resize and scale factor issues;
+-   Handle parameters when there's a running instance and a new
+    kaffeine is called with some URL.
+-   Updated scanfile.dvb.
+
+Version to 2.0.9 (2017-03-07):
+
+-   Fix build at tarball
+
+Version 2.0.8 (2017-03-06):
+
+-    Added Norwegian Nynorsk translation to .desktop files.
+
+Version 2.0.7 (2017-03-06):
+
+-   Add support for H-265 video streams;
+-   Organize debug logs per category, using QLoggingCategory.
+
+Version 2.0.6 (2017-02-21):
+
+-   Autoscan should now seek also for DVB-T2 channels, on devices that
+    support it;
+-   Implement systray show/hide
+-   EPG algorithm improved to reduce CPU usage
+-   Unmute audio when the player instance is created (e. g. Kaffeine is loaded)
+-   Some visual improvements to show <Close> instead of <Ok>/<Cancel>
+    on some windows
+-   Some changes to allow improvements at translations
+-   A new record is now enabled when created
+-   Add support for multipoint LNBf, where DiSEqC is not used
+-   Fix DiSEqC LNBf satellite select
+-   Don't ignore weak signals on DVB-T
+-   Handle special case on devices with a single demux, but multiple frontends
+-   Add support for DVB-T2 multistream
+-   better report errors when VLC is not found
+-   synchronize DVB scan file with latest upstream version
+
+Version 2.0.5 (2016-10-04):
+
+-   ISDB-T Brazil TOC entries were displayed with an offset of 3 hours;
+-   A newly-created recording entry should default to enable;
+-   CMakeLists.txt was including ECM config twice, causing build
+    failures with newer versions of cmake;
+-   Don't quit while recording without explicit ack from the user;
+-   Fix handling of subtitles for DVB streams;
+-   Prevent VLC build warnings with version 3.0.0-git;
+-   Handle the new VLC 3.0 ES change events;
+-   List the proper MIME tipe for open directories;
+-   Fix a minor typo at documentation and fix update\_mimetypes.sh.
+
+Version 2.0.4 (2016-06-30):
+
+-   The changes made on the 103 patches since version 2.0.3 aren't
+    small:
+
+    148 files changed, 3930 insertions(+), 2344 deletions(-)
+
+    I almost released it as 2.1.0 ;) Yet, those changes were all meant to
+    make Kaffeine's more reliable, fixing bugs.
+-   Fix support for DVB-S/S2 and improve LNBf selection;
+-   Add an option to scan other NIT tables;
+-   Fixes at the EPG logic for DVB, ISDB and ATSC;
+-   Addition of content and parental rating for DVB and ISDB-Tb;
+-   Revamped bar gauge showing signal and S/N in dB, if available;
+-   Kaffeine Handbook is ready for shipment;
+-   Man pages is ready for shipment;
+-   The Kaffeine will now honour the icons from the KDE theme, if
+    available.
+
+Version 2.0.3 (2016-06-10):
+
+-   Lots of bug fixes;
+-   Add a menu to allow specifying arguments passed to libVLC;
+-   Fix a build brakage when DVB is selected on build;
+-   Some cleanups at the build dependencies;
+-   New translation added: Russian;
+-   Several small fixes.
+
+Version 2.0.2 (2016-06-07):
+
+-   Several cleanups and fixes on development/deployment tools;
+-   A new minor feature:
+    -   mainwindow: Improve the Tray menu handling
+-   Add support for building with Qt5.5 and KF5.11 (useful to build it
+    for OpenSuse 13.2)
+-   Lots of fixes:
+    -   dvbliveview: create the DVB pipeline at /run/user/&lt;uid&gt;
+    -   dvbliveview: clean empty EPG data when displaying OSG
+    -   vlcmediawidget: Improve the mouse unhide mechanism
+    -   dvbconfigdialog: save DVB device config when dialog is accepted
+    -   dvb: flush channel lists when the channel scan box is closed
+    -   dvbcam\_linux: fix signal connect
+    -   mainwindow: be sure to finish Kaffeine when the main window
+        closes
+    -   mainwindow: show window if minimized and a tray action is called
+    -   dvbepgdialog: move Ok/Cancel buttons to the botton of the layout
+    -   dvbchanneldialog: Add OK/Cancel buttons at the channel edit box
+    -   fix wrong desktop file id, see
+        <https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html>
+    -   install appdata + desktop files with new names
+    -   use org.kde schema for the desktop file
+    -   fix wrong name of appdata file
+    -   src/kaffeine.desktop: add several missing mime types
+    -   Fix desktop file
+    -   CMakeLists.txt: Fix some warnings and make doc build optional
+    -   rename kaffeine.appdata.xml to org.kaffeine.appdata.xml
+    -   main: call setApplicationDomain earlier
+    -   dvbrecording: don't use epgModel when app is closing
+    -   Add documentation to the build system
+    -   main: add translators to the About window
+    -   main: move aboutData to the KaffeineApplication constructor
+    -   main.cpp: set application data after creating QApplication
+    -   mainwindow: re-add support for --tempfile option
+    -   main: fix command line argument parsing
+    -   update the list of supported extensions and mime types
+    -   dvbsi: fix some errors at the ISDB-T terrestrial delsys
+        descriptor
+
+Version 2.0.1 (2016-05-31):
+
+-   Fix the usage of global scanfile.dvb;
+-   Reduce the size of the latitude/longitude validation icon;
+-   Fix a regression at dvbdevice_linux;
+-   Fix DVB live view play/pause logic;
+-   Add support for playing DVB after stop;
+-   Show play time while playing from DVB.
+
+Version 2.0.0 (2016-05-29):
+
+-   Ported to Qt5/KF5
+-   Added support for DVB-T2
+-   Lots of bug fixes
+
+Version 1.3.2 (2015-11-26):
+
+-   Explicitly include CheckIncludeFiles.
+-   Fixed recordings database
+-   Fixes and tweaks to automatic recoring
+-   Prettier buttons.
+-   Prioritised recordings. Conflict handling. Fixed appdata folder.
+-   Unwanted recordings fixed.
+-   Removed recordings don't come back with regex anymore.
+
+Version 1.3.1 (2015-09-06):
+
+-   automatic recordings
+-   fix for information files for recordings
+-   translations readded
+
+Version 1.3 (2015-08-07):
+
+-   option for custom naming for recordings
+-   option for creating information files for recordings
+-   other stuff
+
+Version 1.2 (2011-04-04):
+
+-   add search function to epg
+-   implement ATSC support for epg
+-   fix gnome screen saver inhibition
+-   other fixes and improvements ...
+
+Version 1.1 (2010-09-01):
+
+-   adapt to new shared-mime-info (so that .m2t is assigned to kaffeine
+    again)
+-   workaround issue that video isn't shown without changing tabs when
+    using QT 4.7
+-   recording schedule: fix sorting, improve column and dialog sizes,
+    show a warning about active and pending recordings when closing
+    kaffeine
+-   program guide: remove the "Refresh" button (not necessary anymore)
+-   channel editor: allow sorting by drag and drop
+
+Version 1.0 (2010-05-31):
+
+-   new dependency: libXss
+-   scheduled programs are shown in the program guide
+-   the begin and end margins for recordings are configurable
+-   CICAM is supported
+-   all audio pids are recorded during timeshift
+-   subtitle support (also autoloading)
+-   other fixes and improvements ...
+
+Version 1.0-pre3 (2010-01-31):
+
+-   new dependencies: Qt SQLite plugin, xine-lib, libX11 (Phonon is no
+    longer needed)
+-   added configurable daily or weekly repetition of recording schedule
+    entries
+-   added support for dynamic audio / subtitles streams
+-   reworked playlist support
+-   added DBUS interface and partial MPRIS support
+-   added dvd menu button and deinterlace option
+-   added system tray icon and minimal mode option
+-   other fixes and improvements ...
+
+Version 1.0-pre2 (2009-08-09):
+
+-   added screen saver inhibition (using DBUS;
+    org.freedesktop.ScreenSaver)
+-   added basic playlist features: .m3u, .pls, .xspf (+ old kaffeine
+    format), drag and drop, repeat mode and shuffle
+-   added OSD: various notifications, now and next epg
+-   added DVB-S2 support using S2 API (old API still supported for
+    non-S2 usage)
+-   improved epg: save and restore events, possibility to schedule
+    programs
+-   other fixes and improvements ...
+
+Version 1.0-pre1 (2009-04-26):
+
+-   initial KDE4 release based on KDE4, QT4, Phonon and Solid much of
+    the code base was rewritten; as a consequence not all features from
+    old kaffeine are present yet
+-   supports:
+    -   KDE integration
+    -   DVB-C, DVB-S, DVB-T and ATSC devices
+    -   multiple devices and device hot plug
+    -   scanning inclusive region-based DVB-T Autoscan
+    -   audio stream and subtitle selection
+    -   recordings inclusive instant record
+    -   time shifting
+    -   EPG (incomplete)
+    -   audio CDs, video CDs and DVDs
+-   stuff you might miss: (working hard on them of course ;-)
+    -   localization (see below), full EPG support, CICAM, playlist
+        handling, OSD, S2API, broadcast, DBUS interface
+-   note: there will be a follow-up release in 1 - 1.5 months fixing
+    important shortcomings and also giving time for translations
+-   note: KDE 4.2, Phonon 4.3 and QT 4.4 are required to build / run
+    Kaffeine
+-   note: Kaffeine currently depends on phonon-xine for digital TV
+    playback (due to the used phonon API)
+-   note: you have to reconfigure / rescan if you were using snapshots
+    before

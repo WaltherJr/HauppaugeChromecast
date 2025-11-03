@@ -1,0 +1,27 @@
+# Ignore the following files
+*.gmo
+*.shell
+*CTestTestfile.cmake
+*DependInfo.cmake
+*_automoc.cpp*
+*cmake_install.cmake
+*cmake_uninstall.cmake
+*ecm_uninstall.cmake
+CMakeCache.txt
+CMakeFiles/
+CMakeTmp/
+Makefile
+/compile_commands.json
+config-kaffeine.h
+doc/*.html
+doc/kaffeine.1
+doc/index.cache.bz2
+dtvdaemon/dtvdaemon
+i18n/
+install/
+install_manifest.txt
+moc*.cpp
+patches/
+src/kaffeine
+src/kaffeine.qrc.depends
+src/qrc_kaffeine.cpp
