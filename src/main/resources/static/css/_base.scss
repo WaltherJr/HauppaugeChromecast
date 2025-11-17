@@ -44,3 +44,32 @@ input[type="url"], input[type="text"] {
     padding: 7px 12px;
     border-radius: 7px;
 }
+
+@mixin fill-parent-element {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+@mixin expand-box-size($additional-size) {
+  margin-left: -$additional-size;
+  margin-right: -$additional-size;
+  width: calc(100% + 2 * $additional-size);
+}
+
+.flex-parent {
+  display: flex;
+  align-items: flex-start;  /* optional */
+  gap: 1rem;                /* optional */
+}
+@mixin flex-remaining-width($needed-width-selector, $remaining-space-selector) {
+  & > #{$needed-width-selector} {
+    flex: 0 0 auto; /* take only needed width */
+  }
+
+  & > #{$remaining-space-selector} {
+    flex: 1; /* fill remaining space */
+  }
+}

@@ -1,0 +1,18 @@
+<ul id="main-channel-list">
+    {{#each channels as |channel channelIndex|}}
+    <li data-channel-name="{{prettyChannelName channel.name}}" data-channel-key="{{channel.id}}">
+        <h3>
+            <img class="channel-icon" src="{{ channel.icon }}" alt="{{ getApplicationConfig 'channel_image_alt_text' }}">
+        </h3>
+        <div class="flex-parent">
+            <p class="currently-inspected-programme-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris urna leo, mollis nec nibh sed, imperdiet dictum sem. Pellentesque suscipit enim sit amet urna dapibus finibus. Nunc quis scelerisque sem. Integer tempor nisi dictum tortor iaculis congue. Mauris vestibulum metus sed tristique porttitor. Morbi eget tellus quis neque condimentum egestas commodo in odio. Sed eu faucibus ante, quis posuere tortor. Ut vitae arcu id ligula pellentesque ultricies id id elit.</p>
+            <div class="channel-programmes-list-container">
+            {{#each channel.programmes as |programmesList programmesListIndex|}}
+                {{> channelProgrammesList programmesListIndex=programmesListIndex programmes=programmesList}}
+            {{/each}}
+            </div>
+        </div>
+        <img class="inspected-programme-image" src="" alt="">
+    </li>
+    {{/each}}
+</ul>

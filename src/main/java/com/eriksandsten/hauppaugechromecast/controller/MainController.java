@@ -5,6 +5,7 @@ import com.eriksandsten.hauppaugechromecast.domain.Constants;
 import com.eriksandsten.hauppaugechromecast.service.WebClientService;
 import com.eriksandsten.hauppaugechromecast.domain.Channel;
 import com.eriksandsten.hauppaugechromecast.domain.allente.AllenteEPG;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +28,7 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String home(Model model, @RequestParam(name = "activeChannel", required = false) String activeChannel){
+    public String home(Model model, @RequestParam(name = "activeChannel", required = false) final String activeChannel){
         if (activeProfile.equals(Constants.PROFILE_DEVELOPMENT)) {
             model.addAttribute("debug", "true");
         }
@@ -40,7 +41,7 @@ public class MainController {
 
     @GetMapping(value = "/chromecast-info", produces = "application/json")
     @ResponseBody
-    public String fetchChromecastInfo(@RequestParam(name = "chromecast-info-url", required = true) String infoUrl) {
+    public String fetchChromecastInfo(@RequestParam(name = "chromecast-info-url", required = true) final String infoUrl) {
         Mono<String> info = webClientService.getExternalData(infoUrl, String.class);
         return info.block();
         // return Map.of("name", "John!");
@@ -48,7 +49,7 @@ public class MainController {
 
     @GetMapping(value = "/allente-epg", produces = "application/json")
     @ResponseBody
-    public AllenteEPG fetchAllenteEpg() {
-        return allenteService.fetchAllenteEpg();
+    public AllenteEPG fetchAllenteEpg(@RequestParam @Pattern(regexp = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$") final String date) {
+        return allenteService.fetchAllenteEpg(date);
     }
 }

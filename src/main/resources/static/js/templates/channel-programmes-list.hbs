@@ -1,0 +1,41 @@
+<ul class="channel-programmes-day-list">
+    <h4 class="channel-programmes-list-{{ todayTomorrowHelper 'className' programmesListIndex}}-heading">{{todayTomorrowHelper 'innerHTML' programmesListIndex }}</h4>
+    {{#each programmes as | channelProgramme channelProgrammeIndex|}}
+    <li class="channel-programme-details{{markIfActiveProgramme ../programmes channelProgramme channelProgrammeIndex}}" data-programme-description="{{channelProgramme.description}}" data-programme-image="{{encodeURIHelper channelProgramme.image}}">
+        <a href="#">
+            <span class="channel-programme-name">{{channelProgramme.title}}</span>
+            <span class="channel-programme-start-time">{{prettyProgrammeStartTime channelProgramme.time}}</span>
+        </a>
+    </li>
+    {{/each}}
+</ul>
+{{!/*
+function createChannelProgrammesListHtml(channelProgrammes) {
+    const channelProgrammesList = $('<ul class="channel-programmes-list"></ul>');
+
+    for (let i = 0; i < channelProgrammes.length; i++) {
+        const channelProgrammesDayList = $('<ul class="channel-programmes-day-list"></ul>')
+
+        for (let j = 0; j < channelProgrammes[i].length; j++) {
+            const channelProgramme = channelProgrammes[i][j];
+
+            const channelProgrammeDetails = {
+                'data-programme-title': channelProgramme.title ? channelProgramme.title : '',
+                'data-programme-description': channelProgramme.description,
+                'data-programme-image': encodeURI(channelProgramme.image)
+            };
+
+            const iteratedProgrammeStartTime = new Date(channelProgramme.time);
+            const channelProgrammeItem = $(`<li class="channel-programme-details"><a href="#"><span class="channel-programme-name">${channelProgramme.title}</span><span class="channel-programme-start-time">${iteratedProgrammeStartTime.toTimeString().substring(0, 5)}</span></a></li>`);
+            markIfActiveProgramme(iteratedProgrammeStartTime, channelProgrammeItem, channelProgrammes[i], j);
+
+            channelProgrammeItem.attr(channelProgrammeDetails);
+            channelProgrammesDayList.append(channelProgrammeItem);
+        }
+
+        channelProgrammesList.append($(`<h4 class="'channel-programmes-list-${i === 0 ? 'today' : 'tomorrow'}-heading">${document.app_config.channel_programmes_day_list_captions[i === 0 ? 'today' : 'tomorrow']}</h4>`)).append(channelProgrammesDayList);
+    }
+
+    return channelProgrammesList;
+}
+*/}}

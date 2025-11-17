@@ -14,19 +14,17 @@
 <div class="container">
     <div id="main-left-panel">
         <h2 th:text="#{tv_channels}"></h2>
-        <ul id="left-channel-list">
+        <ul id="main-channel-list">
         </ul>
-    </div>
-    <div id="main-right-panel">
-        <canvas></canvas>
         <div id="player-bottom-panel">
             <div id="player-controls">
                 <button><google-cast-launcher></google-cast-launcher></button>
                 <button id="epg-btn"><span class="material-symbols-sharp">list_alt</span></button>
-                <div id="player-sound-controls">
+                <!--/*<div id="player-sound-controls">
                     <input type="range" id="player-volume" name="volume" min="0" max="100" />
                     <button id="volume-mute-btn"><span class="material-symbols-sharp">volume_mute</span></button>
                 </div>
+                */-->
                 <button id="channel-back-btn"><span class="material-symbols-sharp">arrow_back_ios</span></button>
                 <button id="pause-play-btn"><span class="material-symbols-sharp">play_circle</span></button>
                 <button id="channel-forward-btn"><span class="material-symbols-sharp">arrow_forward_ios</span></button>
@@ -37,9 +35,35 @@
             </div>
         </div>
     </div>
+    <div id="main-right-panel">
+        <video id="main-player" src="http://localhost:8080/video/channel.m3u8" controls></video>
+    </div>
 </div>
-
+<script th:src="@{/js/utils.js}"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    document.app_config = {
+        programme_info_fade_animation: {
+          duration: [[${@environment.getProperty('app.programme_info_fade_animation_duration')}]]
+        },
+        channel_item_display_animation: {
+            duration: [[${@environment.getProperty('app.channel_item_display_animation_duration')}]]
+        },
+        channel_programmes_day_list_captions: {
+            today: capitalize([[#{today}]]),
+            tomorrow: capitalize([[#{tomorrow}]])
+        },
+        channel_image_alt_text: capitalize([[#{channel_icon}]]),
+        last_scrolled_threshold: [[${@environment.getProperty('app.last_scrolled_threshold')}]],
+        last_scrolled_handler_timeout: [[${@environment.getProperty('app.last_scrolled_handler_timeout')}]]
+    }
+/*]]>*/
+</script>
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+<script th:src="@{/js/cast.js}"></script>
+<script th:src="@{/js/handlebars.js}"></script>
 <script th:src="@{/js/home.js}"></script>
+<script th:src="@{/js/channel-programmes-list.js}"></script>
 <script th:src="@{/js/tv_channels_list.js}"></script>
 </body>
 </html>

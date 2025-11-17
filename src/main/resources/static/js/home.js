@@ -1,21 +1,4 @@
 
-$('#left-channel-list a').on('click', function() {
-    $(this).parent('li').addClass('active-channel').siblings('li').removeClass('active-channel');
-});
-
-window['__onGCastApiAvailable'] = function(isAvailable) {
-    if (isAvailable) {
-        initializeCastApi();
-    }
-};
-
-initializeCastApi = function() {
-    cast.framework.CastContext.getInstance().setOptions({
-        receiverApplicationId: 'DBC0ED74', // TODO: use Thymeleaf construct to fetch from Java code
-        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-    });
-};
-
 loadTestVideo = function() {
     const testVideoUrl = document.getElementById("test-video-url").value;
     const testVideoMimeType = document.getElementById("test-video-mime-type").value;
@@ -52,11 +35,63 @@ $('#load-allente-epg-btn').on('click', function() {
         alert('done!');
 });
 
-/*
-var player = new cast.framework.RemotePlayer();
-var playerController = new cast.framework.RemotePlayerController(player);
-playerController.addEventListener(
-cast.framework.RemotePlayerEventType.ANY_CHANGE,
-function(event) {
-alert("apa!");
-});*/
+$(document).ready(async function() {
+    const updatedMainChannelList = await populateChannelList([getFormattedDate(0), getFormattedDate(1)]);
+    debugger;
+
+    $('body').on('click', '#global-popup', function() {
+        $(this).remove();
+
+    }).on('click', 'ul#main-channel-list > li', function(event) {
+        const listItem = $(this);
+        const isProgrammeDetailsChild = $(event.target).closest('li.channel-programme-details').length !== 0;
+        listItem.siblings('li.programme-list-open').removeClass('programme-list-open').find('.flex-parent').css('max-height', '0');
+
+        if (!isProgrammeDetailsChild) {
+            // Only toggle list if not clicking on a programme information link
+            const newHeight = listItem.find('ul.channel-programmes-day-list:first-child').outerHeight();
+            debugger;
+            const flexParent = listItem.toggleClass('programme-list-open').find('.flex-parent');
+            flexParent.css('max-height', listItem.hasClass('programme-list-open') ? `${Math.round(newHeight)}px` : '0');
+            const channelDisplayAnimationDelay = cssFloatToInteger(document.app_config.channel_item_display_animation.duration);
+
+            debugger;
+
+            setTimeout(function() {
+                scrollToChannelListItem(listItem);
+
+            }, channelDisplayAnimationDelay);
+
+            /*
+            setTimeout(function() {
+                const listItemTop = listItem.offset().top;
+                alert('apa!' + listItemTop);
+                $('#main-channel-list').animate(
+                    { scrollTop: listItemTop },
+                    1000
+                );
+            }, 1100);*/ // TODO: use transition-duration value
+        }
+
+    }).on('click', '.channel-programmes-day-list > li > a', function() {
+        const programmeListItem = $(this).closest('li');
+        const programmeImageUrl = programmeListItem.attr('data-programme-image');
+        const programmeDescription = programmeListItem.attr('data-programme-description');
+        $(this).closest('li').addClass('currently-inspected-programme').siblings().removeClass('currently-inspected-programme');
+
+        showProgrammeDetails($(this), programmeImageUrl, programmeDescription);
+
+    }).on('click', '.zap-to-channel-btn', function() {
+        zapToChannel($(this).closest('[data-channel-name]').attr('data-channel-name'));
+
+    });
+
+    document.getElementById('main-channel-list').addEventListener('scroll', function() {
+        console.log('SCROLLING');
+    });
+
+    /*
+    setInterval(function() {
+        populateChannelList();
+    }, 3 * 60 * 1000);*/
+});

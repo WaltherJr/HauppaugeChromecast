@@ -1,17 +1,16 @@
 package com.eriksandsten.hauppaugechromecast;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class WebClientConfig {
 
-    @Bean
-    public WebClient.Builder webClientBuilder() {
-        return WebClient.builder().codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024));
+    public static WebClient.Builder defaultWebClientBuilder(WebClient.Builder webClientBuilder) {
+        return webClientBuilder.codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024));
     }
 
     @Bean

@@ -1,4 +1,24 @@
 
+```
+ffmpeg -i /dev/video0 \
+  -c:v libx264 -preset veryfast -tune zerolatency -c:a aac \
+  -f hls -hls_time 4 -hls_list_size 6 -hls_flags delete_segments \
+  stream.m3u8
+```
+```
+ffmpeg -i /dev/dvb/adapter0/frontend0 \
+  -c:v libx264 -preset veryfast -tune zerolatency -c:a aac \
+  -f hls -hls_time 4 -hls_list_size 6 -hls_flags delete_segments \
+  stream.m3u8
+```
+
+"Note: You need the data right format in this file. Different scanning programs produce different output formats. For example w_scan must be run with the '-X' argument to obtain a channels.conf suitable for 'tzap'."
+Lista V4l (video) och DVB devices: `v4l2-ctl --list-devices`
+Tuna in TV-kanaler (samt hitta namn för tunern): 
+* `w_scan /usr/share/dvb/dvb-c/se-comhem > ~/.tzap/channels.conf` - (bästa alternativet)
+* `w_scan -fc -c SE > channels_SE.conf`
+* `w_scan /usr/share/dvb/dvb-c/se-comhem -ft -A1 -X > ~/.tzap/channels.conf`
+
 Qt6 filer: `/usr/lib/qt6/bin`
 
 `ls /dev/video*`

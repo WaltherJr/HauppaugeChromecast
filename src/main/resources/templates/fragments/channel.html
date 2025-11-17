@@ -1,5 +1,5 @@
 <th:block th:fragment="channel-programme-info">
-    <li th:data-programme-description="*{channelProgramme.description}" th:data-programme-image-url="*{channelProgramme.image}">
+    <li th:data-programme-description="*{channelProgramme.description}" th:data-programme-image="*{channelProgramme.image}">
         <span class="channel-programme-start-time" th:text="*{channelProgramme.startTime}"></span>
         <span class="channel-programme-name" th:text="*{channelProgramme.name}"></span>
     </li>

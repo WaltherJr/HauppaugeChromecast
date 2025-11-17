@@ -1,121 +1,103 @@
 
-function showProgrammeDetailsPopup(popupContent) {
-    let popup = $('#global-popup');
+function showProgrammeDetails(programmeAnchorElement, programmeImageUrl, programmeDescription) {
     debugger;
-    if (popup.length !== 0) {
-        popup.append(popupContent)
-    } else {
-        popup = $('<div id="global-popup"></div>');
-        popup.append(popupContent);
-    }
+    const listItem = programmeAnchorElement.closest('li').parent().closest('li');
+    const alreadyInspectedProgrammeInfoBox = listItem.find('p.currently-inspected-programme-description');
+    const createdImage = $(document.createElement('img')).attr({'src': programmeImageUrl, 'alt': 'Programme image'});
+    const fadeAnimationDuration = document.app_config.programme_info_fade_animation.duration;
+    const fadeAnimationInteger = cssFloatToInteger(fadeAnimationDuration);
 
-    $('body').append(popup);
+    alreadyInspectedProgrammeInfoBox.css('animation-duration', fadeAnimationDuration).removeClass('fade-out fade-in').addClass('fade-out');
+    setTimeout(function() {
+        alreadyInspectedProgrammeInfoBox.text('');
+        alreadyInspectedProgrammeInfoBox.removeClass('fade-out').addClass('fade-in');
+        alreadyInspectedProgrammeInfoBox.text(programmeDescription);
+        debugger;
+        listItem.find('img.inspected-programme-image').attr('src', programmeImageUrl);
+    }, fadeAnimationInteger);
+
+    // createdImage.on('load', function() {
+        // newProgrammeInfoContentDiv.append(createdImage);
+    //});
 }
 
-function loadChannelProgrammes(channelEvents) {
-    const channelProgrammesList = $('<ul class="channel-programmes-list"></ul>');
+function markIfActiveProgramme(iteratedProgrammeStartTime, channelProgrammeListItem, channelProgrammesDayList, j) {
+    const nextProgrammeStartTime = j < channelProgrammesDayList.length - 1 ? new Date(channelProgrammesDayList[j + 1].time) : undefined;
+    const now = new Date();
 
-    // TODO: sort on time field
+    if (iteratedProgrammeStartTime <= now && nextProgrammeStartTime && nextProgrammeStartTime > now) { // TODO: not 100% correct
+        channelProgrammeListItem.addClass('channel-current-programme');
+        return true;
+    }
 
-    for (var i = 0; i < channelEvents.length; i++) {
-        const channelEvent = channelEvents[i];
-        const channelEventDetails = channelEvent.details ? {
-            'data-programme-title': channelEvent.title,
-            'data-programme-description': channelEvent.details.description,
-            'data-programme-image-url': encodeURI(channelEvent.details.image)
-        } : undefined;
+    return false;
+}
 
-        const iteratedProgrammeStartTime = new Date(channelEvent.time);
-        const nextProgrammeStartTime = i < channelEvents.length - 1 ? new Date(channelEvents[i + 1].time) : undefined;
-        const now = new Date();
-        const channelEventItem = $(`<li><a href="#"><span class="channel-programme-name">${channelEvent.title}</span><span class="channel-programme-start-time">${iteratedProgrammeStartTime.toTimeString().substring(0, 5)}</span></a></li>`);
-
-        if (iteratedProgrammeStartTime <= now && nextProgrammeStartTime && nextProgrammeStartTime > now) { // TODO: not 100% correct
-            channelEventItem.addClass('channel-current-programme');
+function createProgrammesFromChannelEvents(channelEvents) {
+    return channelEvents.map(channelEvent => {
+        return {
+            title: channelEvent.details.title,
+            description: channelEvent.details.description,
+            image: channelEvent.details.image,
+            time: channelEvent.time
         }
-
-        if (channelEventDetails) {
-            channelEventItem.attr(channelEventDetails);
-        }
-        channelProgrammesList.append(channelEventItem);
-    }
-
-    return channelProgrammesList;
-}
-/*
-function loadChannelProgrammes(channelEvents) {
-    const channelProgrammesList = $('<ul class="channel-programmes-list"></ul>');
-
-    for (const channelEvent of channelEvents) {
-        const channelEventDetails = channelEvent.details ? {
-            'data-programme-description': channelEvent.details.description,
-            'data-programme-image-url': channelEvent.details.image
-        } : undefined;
-
-        const channelEventItem = $(`<li data-programme-description="${channelEvent.details.description}" data-programme-image-url="${encodeURI(channelEvent.details.image)}"><a href="#"><span class="channel-programme-name">${channelEvent.title}</span><span class="channel-programme-start-time">${channelEvent.time.slice(11, 16)}</span></a></li>`);
-
-        if (channelEventDetails) {
-            channelProgrammesList.attr(channelEventDetails);
-        }
-        channelProgrammesList.append(channelEventItem);
-    }
-
-    return channelProgrammesList;
-}
-*/
-function loadChannelList(channelJson) {
-    const channelListElement = $('#left-channel-list');
-    channelListElement.html('');
-
-    for (const channel of channelJson.channels) {
-        const channelName = `<span>${channel.name.replace('(T)', '').trim()}</span>`;
-        const channelListItem = $(`<li><a href="#" data-channel-key="${channel.id}"><img src="${channel.icon}"></a></li>`);
-        const channelProgrammes = loadChannelProgrammes(channel.events);
-        channelListItem.children("a").append(channelProgrammes);
-        channelListElement.append(channelListItem);
-
-        channelProgrammes.children('.channel-current-programme').each(function(index, element) {
-            const listItemTopPosition = $(element).position().top;
-            const roundedTopPosition = Math.round(listItemTopPosition);
-            const listTopCSSValue = `-${roundedTopPosition}px`;
-            $(element).closest('ul').css('top', listTopCSSValue);
-        });
-    }
-}
-
-function populateChannelList() {
-    fetch('/allente-epg')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();  // Assuming the response is in JSON format
-        }).then(data => {
-            loadChannelList(data);  // Handle the data here
-    }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
     });
 }
 
-populateChannelList();
+function loadChannelLists(channelListsJson) {
+    /*
+    channelListsJson.sort((a, b) => {
+        return a.date === b.date ? 0 : new Date(a.date).getTime() > new Date(b.date).getTime();
+    });
+    */
 
-$('#left-channel-list').on('click', 'ul.channel-programmes-list', function() {
-    // $(this).closest('.left-channel-list').find('ul.channel-programmes-list');
-    $(this).toggleClass('programme-list-open');
-});
+    var channels = {};
 
-$('body').on('click', '#global-popup', function() {
-    $(this).remove();
-});
+    channelListsJson.forEach(channelList => {
+        channelList.channels.forEach(channel => {
+            if (channels[channel.id] === undefined) {
+                channels[channel.id] = {
+                    id: channel.id,
+                    icon: channel.icon,
+                    name: channel.name,
+                    programmes: [createProgrammesFromChannelEvents(channel.events)]
+                }
+            } else {
+                channels[channel.id].programmes.push(createProgrammesFromChannelEvents(channel.events));
+            }
+        });
+    })
 
-$('body').on('click', '.channel-programmes-list > li > a', function() {
-    const programmeListItem = $(this).closest('li');
-    const programmeImageUrl = programmeListItem.attr('data-programme-image-url');
-    const programmeDescription = programmeListItem.attr('data-programme-description');
+    return channels;
 
-    showProgrammeDetailsPopup($(`<div style="background-image: url('${programmeImageUrl}');"><p>${programmeDescription}</p></div>"`));
-});
+}
 
-setInterval(function() {
-    populateChannelList();
-}, 3 * 60 * 1000);
+async function createMainChannelListHtml(channelList) {
+    return renderHandlebarsTemplate('/js/templates/main-channel-list.hbs', {channels: channelList},
+        [{name: 'channelProgrammesList', url: '/js/templates/channel-programmes-list.hbs'}]);
+}
+
+function zapToChannel(requestedChannelName) {
+    alert('DEJSAN');
+    putJSON('/current-channel', JSON.stringify({channelName: requestedChannelName}))
+        .then(response => {
+            console.log(response);
+        });
+}
+
+async function populateChannelList(datesToFetch) {
+    Promise.all(datesToFetch
+        .map(date => getJSON(`/allente-epg?date=${date}`)))
+        .then(async results => {
+            const channelLists = loadChannelLists(results);
+            const mainChannelList = $('#main-channel-list');
+            const updatedMainChannelList = $(await createMainChannelListHtml(channelLists));
+            mainChannelList.replaceWith(updatedMainChannelList);
+            setCurrentChannelProgrammesListPosition(updatedMainChannelList);
+
+
+        }).catch(error => {
+            console.error('There was a problem with one of the fetch operations:', error);
+            alert('One or more requests failed');
+        });
+}

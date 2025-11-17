@@ -1,0 +1,17 @@
+
+ul#main-channel-list div.inspected-channel-programme-info {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  &::before {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: slategray;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: .7;
+  }
+}

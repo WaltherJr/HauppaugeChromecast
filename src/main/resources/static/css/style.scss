@@ -2,6 +2,7 @@
 @use 'sass:color';
 @use 'base';
 @use 'popup';
+@use 'animation';
 @use 'fragments';
 @use 'fragments/player-bottom-panel';
 
@@ -21,7 +22,7 @@
 
 #main-left-panel {
     background-color: base.$color2;
-    flex: 1;
+    flex: 3;
 }
 
 #main-right-panel {
@@ -53,9 +54,9 @@ div[data-description]::before {
     box-sizing: border-box;
 }
 
-canvas {
+video#main-player {
     background-color: gainsboro;
-    height: calc(100% - #{player-bottom-panel.$panel-height});
     width: 100%;
+    height: 100%;
     box-sizing: border-box;
 }

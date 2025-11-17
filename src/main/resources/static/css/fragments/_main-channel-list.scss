@@ -1,0 +1,174 @@
+
+@use '../base';
+@use 'channel-programme-information';
+@use 'sass:color';
+
+$programme-list-teaser-height: 50px;
+$programme-list-padding: 15px;
+$zap-to-channel-btn-width: 50px;
+$zap-to-channel-btn-left-margin: 15px;
+
+#main-left-panel > h2 {
+  margin: 0;
+  padding: 15px 30px;
+  text-align: right;
+}
+
+ul#main-channel-list {
+  margin: 0;
+  padding: 0;
+  height: 50vh;
+  overflow-y: scroll;
+  position: relative; // Needed for jQuery position()
+
+  & > li {
+    display: block;
+    position: relative;
+    box-shadow: inset 0 -1px rgba(255,255,255,.4), inset 0 1px rgba(0,0,0,.4), inset 0 -2px rgba(0,0,0,.2);
+    overflow: hidden;
+
+    &:hover {
+        background-color: rgba(255,255,255,.2);
+
+        .zap-to-channel-btn {
+          // opacity: 1;
+          margin-left: 10px !important;
+        }
+    }
+
+    & > .flex-parent {
+      max-height: 0;
+      transition: max-height 1s ease;
+      overflow: auto;
+      position: relative;
+      z-index: 1;
+    }
+    &.programme-list-open > .flex-parent {
+      overflow-y: scroll;
+    }
+
+    & > h3 {
+      margin: 0;
+      padding: 10px 20px;
+      background-image: linear-gradient(to bottom, slategrey, lightslategrey);
+      box-shadow: inset 0 1px rgba(255,255,255,.3);
+      height: 40px;
+      line-height: 40px;
+      position: relative;
+      z-index: 1;
+
+      .channel-icon {
+        width: auto;
+        height: 40px;
+        float: left;
+      }
+    }
+
+    img.inspected-programme-image {
+      width: 100%;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 0;
+      box-sizing: border-box;
+    }
+  }
+
+  ul.channel-programmes-day-list > h4 {
+
+  }
+
+  /*
+  .flex-parent {
+    @include base.flex-remaining-width('p', '.channel-programmes-list-container');
+  }
+  */
+
+  div.channel-programmes-list-container {
+    float: right;
+  }
+
+  p.currently-inspected-programme-description {
+    background-color: rgba(0,0,0,.5);
+    font-weight: bold;
+    color: white;
+    padding: 20px;
+    border-radius: 7px;
+    transition: margin-top .7s ease;
+  }
+
+  ul.channel-programmes-day-list {
+    font-size: 14px;
+    text-align: right;
+    display: block;
+    float: right;
+    padding: 0 $programme-list-padding;
+    transition: height .4s ease;
+    position: relative; // Needed for jQuery position()
+
+    li.channel-programme-details {
+      a {
+        display: block;
+        white-space: nowrap;
+      }
+
+      &.channel-current-programme > a {
+        font-weight: bold;
+      }
+
+      &.currently-inspected-programme > a {
+        color: white;
+        font-weight: bold;
+      }
+    }
+
+    .channel-programme-start-time {
+      color: rgba(0,0,0,.4);
+      display: inline-block;
+      margin-left: 15px;
+    }
+  }
+
+  & > li > a {
+    height: 50px;
+    color: base.$lighter-darkkhaki;
+    display: block;
+    position: relative;
+    z-index: 1;
+
+    & > div.zap-to-channel-btn-and-icon {
+      position: relative;
+      float: left;
+
+      .zap-to-channel-btn {
+        z-index: 1;
+        background-color: darkslategray;
+        width: $zap-to-channel-btn-width;
+        height: 38px;
+        padding: 10px 10px;
+        position: relative;
+        top: -10px;
+        box-sizing: border-box;
+        margin-left: -($zap-to-channel-btn-width + 10px);
+        margin-right: 10px;
+        transition: margin-left .4s ease;
+
+        &:hover {
+          background-color: color.adjust(darkslategray, $lightness: 20%);
+        }
+
+        & > span {
+          font-size: 30px;
+          line-height: 18px;
+        }
+      }
+
+      img.channel-icon {
+        width: auto;
+        height: 50px;
+        z-index: 1;
+      }
+    }
+  }
+}

@@ -37,6 +37,12 @@ input[type=url], input[type=text] {
   border-radius: 7px;
 }
 
+.flex-parent {
+  display: flex;
+  align-items: flex-start; /* optional */
+  gap: 1rem; /* optional */
+}
+
 #global-popup {
   position: fixed;
   z-index: 999;
@@ -66,6 +72,26 @@ input[type=url], input[type=text] {
   color: rgba(255, 255, 255, 0.9);
 }
 
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 2s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+.fade-out {
+  opacity: 1;
+  animation: fadeOut 2s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
 #locale-selection img {
   width: 25px;
   height: auto;
@@ -80,70 +106,159 @@ input[type=url], input[type=text] {
   filter: contrast(0.3);
 }
 
+ul#main-channel-list div.inspected-channel-programme-info {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+ul#main-channel-list div.inspected-channel-programme-info::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: slategray;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.7;
+}
+
 #main-left-panel > h2 {
   margin: 0;
   padding: 15px 30px;
   text-align: right;
 }
 
-ul#left-channel-list {
+ul#main-channel-list {
   margin: 0;
   padding: 0;
   height: 50vh;
   overflow-y: scroll;
+  position: relative;
 }
-ul#left-channel-list ul.channel-programmes-list {
+ul#main-channel-list > li {
+  display: block;
+  position: relative;
+  box-shadow: inset 0 -1px rgba(255, 255, 255, 0.4), inset 0 1px rgba(0, 0, 0, 0.4), inset 0 -2px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+ul#main-channel-list > li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+ul#main-channel-list > li:hover .zap-to-channel-btn {
+  margin-left: 10px !important;
+}
+ul#main-channel-list > li > .flex-parent {
+  max-height: 0;
+  transition: max-height 1s ease;
+  overflow: auto;
+  position: relative;
+  z-index: 1;
+}
+ul#main-channel-list > li.programme-list-open > .flex-parent {
+  overflow-y: scroll;
+}
+ul#main-channel-list > li > h3 {
+  margin: 0;
+  padding: 10px 20px;
+  background-image: linear-gradient(to bottom, slategrey, lightslategrey);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.3);
+  height: 40px;
+  line-height: 40px;
+  position: relative;
+  z-index: 1;
+}
+ul#main-channel-list > li > h3 .channel-icon {
+  width: auto;
+  height: 40px;
+  float: left;
+}
+ul#main-channel-list > li img.inspected-programme-image {
+  width: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  box-sizing: border-box;
+}
+ul#main-channel-list {
+  /*
+  .flex-parent {
+    @include base.flex-remaining-width('p', '.channel-programmes-list-container');
+  }
+  */
+}
+ul#main-channel-list div.channel-programmes-list-container {
+  float: right;
+}
+ul#main-channel-list p.currently-inspected-programme-description {
+  background-color: rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  color: white;
+  padding: 20px;
+  border-radius: 7px;
+  transition: margin-top 0.7s ease;
+}
+ul#main-channel-list ul.channel-programmes-day-list {
   font-size: 14px;
   text-align: right;
-  width: 70%;
   display: block;
   float: right;
-  margin-top: -10px;
-  margin-bottom: -10px;
-  height: calc(100% + 20px);
+  padding: 0 15px;
   transition: height 0.4s ease;
   position: relative;
 }
-ul#left-channel-list ul.channel-programmes-list.programme-list-open {
-  height: initial;
+ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details a {
+  display: block;
+  white-space: nowrap;
 }
-ul#left-channel-list ul.channel-programmes-list li {
-  display: list-item !important;
-}
-ul#left-channel-list ul.channel-programmes-list li.active-item {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-ul#left-channel-list ul.channel-programmes-list li.channel-current-programme > a {
+ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details.channel-current-programme > a {
   font-weight: bold;
 }
-ul#left-channel-list ul.channel-programmes-list .channel-programme-start-time {
+ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details.currently-inspected-programme > a {
+  color: white;
+  font-weight: bold;
+}
+ul#main-channel-list ul.channel-programmes-day-list .channel-programme-start-time {
   color: rgba(0, 0, 0, 0.4);
   display: inline-block;
   margin-left: 15px;
 }
-ul#left-channel-list > li > a {
+ul#main-channel-list > li > a {
   height: 50px;
   color: rgb(200.1086956522, 197.1811594203, 158.3913043478);
   display: block;
-  padding: 10px 10px 10px 25px;
-  background-image: linear-gradient(to bottom, darkkhaki, #aaa674);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 1;
 }
-ul#left-channel-list > li > a img {
-  width: auto;
-  height: 50px;
-  display: block;
+ul#main-channel-list > li > a > div.zap-to-channel-btn-and-icon {
+  position: relative;
   float: left;
 }
-ul#left-channel-list > li > a:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+ul#main-channel-list > li > a > div.zap-to-channel-btn-and-icon .zap-to-channel-btn {
+  z-index: 1;
+  background-color: darkslategray;
+  width: 50px;
+  height: 38px;
+  padding: 10px 10px;
+  position: relative;
+  top: -10px;
+  box-sizing: border-box;
+  margin-left: -60px;
+  margin-right: 10px;
+  transition: margin-left 0.4s ease;
 }
-ul#left-channel-list > li {
-  display: block;
-  overflow-y: hidden;
+ul#main-channel-list > li > a > div.zap-to-channel-btn-and-icon .zap-to-channel-btn:hover {
+  background-color: rgb(85.0476190476, 142.9523809524, 142.9523809524);
 }
-ul#left-channel-list > li.active-channel {
-  background-color: rgba(0, 0, 0, 0.2);
+ul#main-channel-list > li > a > div.zap-to-channel-btn-and-icon .zap-to-channel-btn > span {
+  font-size: 30px;
+  line-height: 18px;
+}
+ul#main-channel-list > li > a > div.zap-to-channel-btn-and-icon img.channel-icon {
+  width: auto;
+  height: 50px;
+  z-index: 1;
 }
 
 #player-bottom-panel {
@@ -209,7 +324,7 @@ header#debug-header:hover {
 
 #main-left-panel {
   background-color: darkkhaki;
-  flex: 1;
+  flex: 3;
 }
 
 #main-right-panel {
@@ -242,9 +357,9 @@ div[data-description]::before {
   box-sizing: border-box;
 }
 
-canvas {
+video#main-player {
   background-color: gainsboro;
-  height: calc(100% - 50px);
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
 }
