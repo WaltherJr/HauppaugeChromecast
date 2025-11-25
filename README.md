@@ -6,6 +6,7 @@ Streaming TV application that uses the Hauppaugee [WinTV SoloHD](https://www.hau
 ### Technologies
 #### Languages
 * [Java](https://en.wikipedia.org/wiki/Java_(programming_language))
+* [C/C++](https://en.wikipedia.org/wiki/C%2B%2B)
 * [JavaScript](https://en.wikipedia.org/wiki/JavaScript)
 * [HTML](https://en.wikipedia.org/wiki/HTML)/[CSS](https://en.wikipedia.org/wiki/CSS)
 

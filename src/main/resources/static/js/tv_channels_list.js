@@ -12,8 +12,9 @@ function showProgrammeDetails(programmeAnchorElement, programmeImageUrl, program
         alreadyInspectedProgrammeInfoBox.text('');
         alreadyInspectedProgrammeInfoBox.removeClass('fade-out').addClass('fade-in');
         alreadyInspectedProgrammeInfoBox.text(programmeDescription);
-        debugger;
-        listItem.find('img.inspected-programme-image').attr('src', programmeImageUrl);
+
+        setInspectedProgrammeImage(programmeImageUrl);
+
     }, fadeAnimationInteger);
 
     // createdImage.on('load', function() {
@@ -31,6 +32,10 @@ function markIfActiveProgramme(iteratedProgrammeStartTime, channelProgrammeListI
     }
 
     return false;
+}
+
+function setInspectedProgrammeImage(url) {
+    $('#inspected-programme-image-container > img').attr('src', url ? url : "");
 }
 
 function createProgrammesFromChannelEvents(channelEvents) {
@@ -72,8 +77,8 @@ function loadChannelLists(channelListsJson) {
 
 }
 
-async function createMainChannelListHtml(channelList) {
-    return renderHandlebarsTemplate('/js/templates/main-channel-list.hbs', {channels: channelList},
+async function createMainChannelListHtml(channelList, channelListHeight) {
+    return renderHandlebarsTemplate('/js/templates/main-channel-list.hbs', {channels: channelList, channelListHeight: channelListHeight},
         [{name: 'channelProgrammesList', url: '/js/templates/channel-programmes-list.hbs'}]);
 }
 
@@ -85,15 +90,17 @@ function zapToChannel(requestedChannelName) {
         });
 }
 
-async function populateChannelList(datesToFetch) {
-    Promise.all(datesToFetch
+async function populateChannelList(datesToFetch, channelListHeight) {
+    await Promise.all(datesToFetch
         .map(date => getJSON(`/allente-epg?date=${date}`)))
         .then(async results => {
             const channelLists = loadChannelLists(results);
             const mainChannelList = $('#main-channel-list');
-            const updatedMainChannelList = $(await createMainChannelListHtml(channelLists));
+            const updatedMainChannelList = $(await createMainChannelListHtml(channelLists, channelListHeight));
             mainChannelList.replaceWith(updatedMainChannelList);
+
             setCurrentChannelProgrammesListPosition(updatedMainChannelList);
+
 
 
         }).catch(error => {

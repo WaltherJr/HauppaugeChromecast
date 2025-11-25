@@ -10,30 +10,48 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 </head>
 <body>
-<th:block th:if="${debug != null}" th:include="fragments/debug_overlay :: header"></th:block>
 <div class="container">
     <div id="main-left-panel">
-        <h2 th:text="#{tv_channels}"></h2>
-        <ul id="main-channel-list">
-        </ul>
-        <div id="player-bottom-panel">
-            <div id="player-controls">
-                <button><google-cast-launcher></google-cast-launcher></button>
-                <button id="epg-btn"><span class="material-symbols-sharp">list_alt</span></button>
-                <!--/*<div id="player-sound-controls">
-                    <input type="range" id="player-volume" name="volume" min="0" max="100" />
-                    <button id="volume-mute-btn"><span class="material-symbols-sharp">volume_mute</span></button>
-                </div>
-                */-->
-                <button id="channel-back-btn"><span class="material-symbols-sharp">arrow_back_ios</span></button>
-                <button id="pause-play-btn"><span class="material-symbols-sharp">play_circle</span></button>
-                <button id="channel-forward-btn"><span class="material-symbols-sharp">arrow_forward_ios</span></button>
-            </div>
-            <div id="locale-selection">
-                <button id="locale-en" data-locale-key="en" th:class="${@requestHelper.isCurrentLocale('en') ? 'active-locale' : ''}"><img src="https://cdn-icons-png.flaticon.com/512/197/197374.png" alt="English flag icon"></button>
-                <button id="locale-sv" data-locale-key="sv-SE" th:class="${@requestHelper.isCurrentLocale('sv-SE') ? 'active-locale' : ''}"><img src="https://cdn-icons-png.flaticon.com/512/197/197564.png" alt="Swedish flag icon"></button>
-            </div>
+        <div class="tabs">
+            <ul class="tab-headings">
+                <li class="active-tab"><a href="#tab-tv-channels" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('tv', '-', 'channels')}"></a></li>
+                <li><a href="#tab-settings" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('settings')}"></a></li>
+                <li><a href="#tab-developer" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('developer')}"></a></li>
+            </ul>
+            <ul class="grid tab-content">
+                <li id="tab-tv-channels">
+                    <div class="grid tab-content">
+                        <ul id="main-channel-list"><li id="inspected-programme-image-container"><img src="" alt=""></li></ul>
+                        <!--/*
+                        <div id="player-bottom-panel">
+                            <div id="player-controls">
+                                <button><google-cast-launcher></google-cast-launcher></button>
+                                <button id="epg-btn"><span class="material-symbols-sharp">list_alt</span></button>
+                                <button id="channel-back-btn"><span class="material-symbols-sharp">arrow_back_ios</span></button>
+                                <button id="pause-play-btn"><span class="material-symbols-sharp">play_circle</span></button>
+                                <button id="channel-forward-btn"><span class="material-symbols-sharp">arrow_forward_ios</span></button>
+                            </div>
+                            <div id="locale-selection">
+                                <button id="locale-en" data-locale-key="en" th:class="${@requestHelper.isCurrentLocale('en') ? 'active-locale' : ''}"><img src="https://cdn-icons-png.flaticon.com/512/197/197374.png" alt="English flag icon"></button>
+                                <button id="locale-sv" data-locale-key="sv-SE" th:class="${@requestHelper.isCurrentLocale('sv-SE') ? 'active-locale' : ''}"><img src="https://cdn-icons-png.flaticon.com/512/197/197564.png" alt="Swedish flag icon"></button>
+                            </div>
+                        </div>
+                        */-->
+                    </div>
+                </li>
+                <li id="tab-settings">
+                    <div class="grid tab-content">
+                        <th:block th:include=fragments/settings></th:block>
+                    </div>
+                </li>
+                <li id="tab-developer">
+                    <div class="grid tab-content">
+                        <th:block th:if="${debug != null}" th:include="fragments/debug_overlay :: header"></th:block>
+                    </div>
+                </li>
+            </ul>
         </div>
+
     </div>
     <div id="main-right-panel">
         <video id="main-player" src="http://localhost:8080/video/channel.m3u8" controls></video>

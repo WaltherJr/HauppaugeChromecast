@@ -5,6 +5,7 @@ $color1: #9a9878;
 $color2: darkkhaki;
 $color3: darkslategray;
 $lighter-darkkhaki: color.scale(#84804b, $lightness: 50%);
+$tab-headings-border-radius: 7px;
 
 html, body {
     margin: 0;
@@ -71,5 +72,47 @@ input[type="url"], input[type="text"] {
 
   & > #{$remaining-space-selector} {
     flex: 1; /* fill remaining space */
+  }
+}
+
+.grid {
+  display: grid;
+}
+
+.tabs {
+  & > .tab-headings {
+    background: gray;
+    border-bottom-left-radius: $tab-headings-border-radius;
+    border-bottom-right-radius: $tab-headings-border-radius;
+    overflow: hidden;
+
+    & > li {
+      display: inline-block;
+
+      &.active-tab {
+        background-color: rgba(0,0,0,.4);
+      }
+    }
+  }
+
+  & > .tab-content {
+    position: relative;
+
+    h4 {
+      background-color: goldenrod;
+      grid-column: 1 / span 4;
+    }
+
+    & > li {
+      display: grid;
+      position: absolute;
+      overflow-y: scroll;
+      left: 0;
+      top: 0;
+
+      &.active-tab {
+        z-index: 1;
+      }
+    }
   }
 }

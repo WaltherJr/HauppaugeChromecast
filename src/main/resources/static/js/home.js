@@ -15,81 +15,73 @@ document.getElementById("load-test-video-btn").addEventListener("click", functio
 
 $('#locale-selection > button').on('click', function() {
     const url = new URL(window.location);
-    url.searchParams.set('lang', $(this).attr('data-locale-key'));
+    url.searchParams.set('lang', $(this).attr('data-locale-key'));x
     window.location = url;
 });
 
-$('#load-allente-epg-btn').on('click', function() {
-    fetch('/allente-epg')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();  // Assuming the response is in JSON format
-        }).then(data => {
-            console.log(data);  // Handle the data here
-        }).catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
+function computeMaxHeightOfChannelListItem(listItem) {
+    const programmesListHeight = listItem.find('.channel-programmes-list-container').outerHeight(true); // Include margins
+    const inspectedProgrammeDescription = listItem.find('.currently-inspected-programme-description').outerHeight(true);
+    const newHeight = Math.max(programmesListHeight, inspectedProgrammeDescription);
 
-        alert('done!');
-});
-
-$(document).ready(async function() {
-    const updatedMainChannelList = await populateChannelList([getFormattedDate(0), getFormattedDate(1)]);
     debugger;
 
-    $('body').on('click', '#global-popup', function() {
-        $(this).remove();
+    return Math.round(newHeight) + 20;
+}
 
-    }).on('click', 'ul#main-channel-list > li', function(event) {
-        const listItem = $(this);
-        const isProgrammeDetailsChild = $(event.target).closest('li.channel-programme-details').length !== 0;
-        listItem.siblings('li.programme-list-open').removeClass('programme-list-open').find('.flex-parent').css('max-height', '0');
+$(document).ready(async function() {
+    const mainChannelList = $('#main-channel-list');
 
-        if (!isProgrammeDetailsChild) {
-            // Only toggle list if not clicking on a programme information link
-            const newHeight = listItem.find('ul.channel-programmes-day-list:first-child').outerHeight();
-            debugger;
-            const flexParent = listItem.toggleClass('programme-list-open').find('.flex-parent');
-            flexParent.css('max-height', listItem.hasClass('programme-list-open') ? `${Math.round(newHeight)}px` : '0');
-            const channelDisplayAnimationDelay = cssFloatToInteger(document.app_config.channel_item_display_animation.duration);
+    await populateChannelList([getFormattedDate(0), getFormattedDate(1)], mainChannelList.outerHeight())
+        .then(() => {
+            const a = document.querySelectorAll('.flex-parent');
+            a.forEach(element => element.addEventListener('scroll', function() {
+                document.lastScrolled = new Date();
+                console.log('SCROLLING!');
+            }));
 
-            debugger;
+            setIntersectionObservers()
+        });
 
-            setTimeout(function() {
-                scrollToChannelListItem(listItem);
+    $('body').on('click', 'ul#main-channel-list > li', changeInspectedChannelListItem)
+        .on('click', '.channel-programmes-day-list > li > a', function() {
+            const programmeListItem = $(this).closest('li');
+            const programmeImageUrl = programmeListItem.attr('data-programme-image');
+            const programmeDescription = programmeListItem.attr('data-programme-description');
 
-            }, channelDisplayAnimationDelay);
+            programmeListItem.parent().parent().find('.currently-inspected-programme').removeClass('currently-inspected-programme');
+            programmeListItem.addClass('currently-inspected-programme');
 
-            /*
-            setTimeout(function() {
-                const listItemTop = listItem.offset().top;
-                alert('apa!' + listItemTop);
-                $('#main-channel-list').animate(
-                    { scrollTop: listItemTop },
-                    1000
-                );
-            }, 1100);*/ // TODO: use transition-duration value
-        }
+            showProgrammeDetails($(this), programmeImageUrl, programmeDescription);
 
-    }).on('click', '.channel-programmes-day-list > li > a', function() {
-        const programmeListItem = $(this).closest('li');
-        const programmeImageUrl = programmeListItem.attr('data-programme-image');
-        const programmeDescription = programmeListItem.attr('data-programme-description');
-        $(this).closest('li').addClass('currently-inspected-programme').siblings().removeClass('currently-inspected-programme');
+        }).on('click', '.zap-to-channel-btn', function() {
+            zapToChannel($(this).closest('[data-channel-name]').attr('data-channel-name'));
 
-        showProgrammeDetails($(this), programmeImageUrl, programmeDescription);
+        }).on('click', '.tabs > .tab-headings a', function(event) {
+            event.preventDefault();
+            const listItem = $(this).closest('li');
+            const listItemIndex = listItem.index();
+            const activeTab = listItem.parent().siblings('.tab-content').children().get(listItemIndex);
 
-    }).on('click', '.zap-to-channel-btn', function() {
-        zapToChannel($(this).closest('[data-channel-name]').attr('data-channel-name'));
+            listItem.addClass('active-tab').siblings().removeClass('active-tab');
+            $(activeTab).addClass('active-tab').siblings().removeClass('active-tab');
 
-    });
+        }).on('change', 'select#language-selection', function() {
+            console.log($(this).val());
+            reloadPageSearchParams((pageSearchParams) => pageSearchParams.set('lang', $(this).val()));
 
-    document.getElementById('main-channel-list').addEventListener('scroll', function() {
-        console.log('SCROLLING');
-    });
+        });
 
+    setResizeObservers();
+    const mainLeftPanelDimensions = JSON.parse(localStorage.getItem("main-left-panel-dimensions") || '{}');
+    if (mainLeftPanelDimensions) {
+        mainChannelList.css('width', `${mainLeftPanelDimensions.width}px`);
+    }
+
+    const inspectedProgrammeImage = $('#inspected-programme-image-container > img');
+    const newImageHeight = Math.round(mainChannelList.outerHeight());
+    inspectedProgrammeImage.css('height', `${newImageHeight}px`);
+    debugger;
     /*
     setInterval(function() {
         populateChannelList();

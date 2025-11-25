@@ -1,6 +1,12 @@
 
 const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
+function reloadPageSearchParams(callback) {
+    const url = new URL(window.location);
+    callback(url.searchParams);
+    window.location = url.toString();
+}
+
 function cssFloatToInteger(cssFloatString) {
     return parseFloat(cssFloatString) * 1000;
 }

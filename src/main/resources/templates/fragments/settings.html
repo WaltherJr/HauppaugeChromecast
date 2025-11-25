@@ -1,0 +1,7 @@
+<th:block>
+    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('chosen', 'language')}"></h4>
+    <select id="language-selection">
+        <option value="en" th:text="#{locale.en}"></option>
+        <option value="sv-SE" th:text="#{locale.sv-SE}"></option>
+    </select>
+</th:block>

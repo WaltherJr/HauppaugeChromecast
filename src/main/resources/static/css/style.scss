@@ -1,10 +1,17 @@
 
 @use 'sass:color';
 @use 'base';
-@use 'popup';
 @use 'animation';
 @use 'fragments';
 @use 'fragments/player-bottom-panel';
+
+$main-left-panel-width: 50vw;
+$main-container-height: 85vh;
+$main-menu-height: 50px;
+
+.fixed {
+  position: fixed;
+}
 
 .container {
     display: flex;
@@ -22,7 +29,24 @@
 
 #main-left-panel {
     background-color: base.$color2;
-    flex: 3;
+    // flex: 3;
+    width: $main-left-panel-width;
+    height: $main-container-height;
+    resize: horizontal;
+
+    .tab-headings {
+      height: $main-menu-height;
+      line-height: $main-menu-height;
+      position: absolute;
+      top: 100%;
+      left: 0;
+    }
+
+    & > .tabs > .tab-content > li {
+      width: 100%;
+      height: calc(#{$main-container-height} - #{$main-menu-height});
+      background-color: gainsboro;
+    }
 }
 
 #main-right-panel {
