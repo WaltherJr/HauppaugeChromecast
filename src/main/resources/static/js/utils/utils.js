@@ -1,6 +1,12 @@
 
 const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
+function callAppFunction(functionName, developerModeMessage) {
+    eval(functionName + '();');
+    const timestamp = new Date().toLocaleString();
+    $('#developer-mode-messages').prepend(`<li><span class="developer-mode-message-time">${timestamp}</span><span class="developer-mode-message">${developerModeMessage}</span></li>`);
+}
+
 function setActiveTab(event) {
     event.preventDefault();
     setActiveTabContent($(this).closest('li'), $(this).attr('href'));
@@ -12,6 +18,15 @@ function setActiveTabContent(contentTabOrTabHeading, hash) {
     const items = tabsContainer.find(`.tab-headings > li:nth-child(${tabIndex}), .tab-content-wrapper > li:nth-child(${tabIndex})`);
     items.addClass('active-tab').siblings().removeClass('active-tab');
     window.location.hash = hash;
+}
+
+function updatePageQueryParameter(parameterName, parameterValue) {
+    let url = new URL(window.location);
+    let params = new URLSearchParams(url.search);
+
+    params.set(parameterName, parameterValue);
+    url.search = params.toString(); // Update the URL with the new query parameters
+    window.history.pushState({}, '', url); // Update the browser's URL without reloading the page
 }
 
 function reloadPageSearchParams(callback) {

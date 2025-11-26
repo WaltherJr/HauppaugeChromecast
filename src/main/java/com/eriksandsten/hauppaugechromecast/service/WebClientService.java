@@ -7,7 +7,6 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class WebClientService<T> {
-
     public Mono<T> getExternalData(String url, Class<T> responseType) {
         return WebClientConfig.defaultWebClientBuilder(WebClient.builder())
                 .baseUrl(url)

@@ -46,6 +46,21 @@ input[type="url"], input[type="text"] {
     border-radius: 7px;
 }
 
+@mixin resizable($axis) {
+  @if($axis == 'x') {
+    resize: horizontal;
+    overflow-x: auto;
+
+  } @else if($axis == 'y') {
+    resize: vertical;
+    overflow-y: auto;
+
+  } @else if ($axis == 'xy' or $axis == 'yx') {
+    resize: both;
+    overflow: auto;
+  }
+}
+
 @mixin fill-parent-element {
   position: absolute;
   top: 0;

@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.rocksdb:rocksdbjni:10.4.2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 @Component
 public class I18NHelper {
-    private static MessageSource messageSource;
+    static MessageSource messageSource;
     private static Pattern dslRegex = Pattern.compile("^(.+)\\[([^]]+)]$");
 
     @Autowired
@@ -21,22 +21,29 @@ public class I18NHelper {
     }
 
     public static String buildString(String... words) {
+        return joinStrings(buildWordList(words), " ");
+    }
+
+    public static String buildStringWithoutDelimiter(String... words) {
+        return joinStrings(buildWordList(words), "");
+    }
+
+    private static List<String> buildWordList(String... words) {
         final Locale currentLocale = LocaleContextHolder.getLocale();
 
         final var wordsTranslated = new java.util.ArrayList<>(Arrays.stream(words).
-        map(word -> {
-            try {
-                return messageSource.getMessage(word, new Object[]{}, currentLocale);
+                map(word -> {
+                    try {
+                        return messageSource.getMessage(word, new Object[]{}, currentLocale);
 
-            } catch (NoSuchMessageException e) {
-                return word; // Return the word non-translated, as-is
-            }
-        }).toList());
+                    } catch (NoSuchMessageException e) {
+                        return word; // Return the word non-translated, as-is
+                    }
+                }).toList());
 
         final String firstWord = wordsTranslated.getFirst();
         wordsTranslated.set(0, firstWord.substring(0, 1).toUpperCase() + firstWord.substring(1));
-
-        return joinStrings(wordsTranslated);
+        return wordsTranslated;
     }
 
     private static void handleSingleWord(AtomicInteger i, List<String> words, Deque<String> queue, String currentWord) {
@@ -57,7 +64,7 @@ public class I18NHelper {
         }
     }
 
-    private static String joinStrings(List<String> words) {
+    private static String joinStrings(List<String> words, String delimiter) {
         Deque<String> queue = new ArrayDeque<>();
 
         for (AtomicInteger i = new AtomicInteger(0); i.get() < words.size(); i.getAndIncrement()) {
@@ -84,7 +91,7 @@ public class I18NHelper {
             }
         }
 
-        return String.join(" ", queue);
+        return String.join(delimiter, queue);
     }
 
     private static Map<String, String> extractWordParams(Matcher matcher) {

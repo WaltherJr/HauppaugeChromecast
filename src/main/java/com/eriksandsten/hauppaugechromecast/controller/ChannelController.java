@@ -16,6 +16,11 @@ public class ChannelController {
         this.channelService = channelService;
     }
 
+    @GetMapping("/current-channel")
+    public Channel getCurrentChannel() {
+        return channelService.getActiveChannel();
+    }
+
     @PutMapping("/current-channel")
     public void setCurrentChannel(@RequestBody UpdateCurrentChannelRequest request) {
         channelService.setActiveChannel(request.channelName());
@@ -24,10 +29,5 @@ public class ChannelController {
     @GetMapping("/programme-image")
     public Image getProgrammeImage(@RequestParam String imageUrl) {
         return ImageHelper.fetchImage(imageUrl);
-    }
-
-    @GetMapping("/current-channel")
-    public Channel getCurrentChannel() {
-        return channelService.getActiveChannel();
     }
 }

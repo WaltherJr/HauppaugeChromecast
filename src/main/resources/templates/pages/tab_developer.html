@@ -1,4 +1,6 @@
 <th:block>
+    <input id="developer-mode" type="checkbox"><label for="developer-mode" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildStringWithoutDelimiter('developer{2}', ' [locale=en]', 'mode')}"></label>
+
     <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('chromecast', 'testing', 'and', 'configuration')}"></h4>
         <label for="chromecast-info-url" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('chromecast', 'url', ':')}"></label>
         <input id="chromecast-info-url" name="chromecast-info-url" type="url">

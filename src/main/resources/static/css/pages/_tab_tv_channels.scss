@@ -17,6 +17,7 @@ $channel-programmes-list-container-padding: 20px;
 
     #inspected-programme-image-container {
       position: fixed;
+      overflow: hidden; // Hide overlapping programme images
       z-index: 1;
 
       img {
@@ -112,7 +113,8 @@ $channel-programmes-list-container-padding: 20px;
       background-size: cover;
       background-repeat: no-repeat;
       background-position: 0 0;
-      padding: $channel-programmes-list-container-padding;
+      padding: $channel-programmes-list-container-padding $channel-programmes-list-container-padding + 10
+        $channel-programmes-list-container-padding $channel-programmes-list-container-padding;
     }
 
     p.currently-inspected-programme-description {
@@ -139,7 +141,7 @@ $channel-programmes-list-container-padding: 20px;
         }
 
         &.channel-current-programme > a {
-          font-weight: bold;
+          background-color: rgba(255,255,255,.4);
         }
 
         &.currently-inspected-programme > a {

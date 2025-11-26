@@ -1,10 +1,11 @@
 package com.eriksandsten.hauppaugechromecast.controller;
 
+import com.eriksandsten.hauppaugechromecast.repository.HauppaggeChromecastRepository;
 import com.eriksandsten.hauppaugechromecast.service.AllenteService;
 import com.eriksandsten.hauppaugechromecast.domain.Constants;
 import com.eriksandsten.hauppaugechromecast.service.WebClientService;
 import com.eriksandsten.hauppaugechromecast.domain.Channel;
-import com.eriksandsten.hauppaugechromecast.domain.allente.AllenteEPG;
+import com.eriksandsten.hauppaugechromecast.domain.epg.EPG;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,21 +20,29 @@ public class MainController {
 
     private WebClientService webClientService;
     private AllenteService allenteService;
+    private HauppaggeChromecastRepository hauppaggeChromecastRepository;
+
     @Value("${spring.profiles.active:default}")
     private String activeProfile;
 
-    public MainController(WebClientService webClientService, AllenteService allenteService) {
+    public MainController(WebClientService webClientService, AllenteService allenteService, HauppaggeChromecastRepository hauppaggeChromecastRepository) {
         this.webClientService = webClientService;
         this.allenteService = allenteService;
+        this.hauppaggeChromecastRepository = hauppaggeChromecastRepository;
+    }
+
+    @GetMapping("/db")
+    public String getDBValue() {
+        return hauppaggeChromecastRepository.test();
     }
 
     @GetMapping("/")
-    public String home(Model model, @RequestParam(name = "activeChannel", required = false) final String activeChannel){
+    public String home(Model model, @RequestParam(name = "selectedChannel", required = false) final String selectedChannel) {
         if (activeProfile.equals(Constants.PROFILE_DEVELOPMENT)) {
             model.addAttribute("debug", "true");
         }
 
-        model.addAttribute("activeChannel", activeChannel);
+        model.addAttribute("selectedChannel", selectedChannel);
         model.addAttribute("channelsList", Channel.CHANNELS_LIST);
 
         return "home";
@@ -49,7 +58,7 @@ public class MainController {
 
     @GetMapping(value = "/allente-epg", produces = "application/json")
     @ResponseBody
-    public AllenteEPG fetchAllenteEpg(@RequestParam @Pattern(regexp = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$") final String date) {
+    public EPG fetchAllenteEpg(@RequestParam @Pattern(regexp = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$") final String date) {
         return allenteService.fetchAllenteEpg(date);
     }
 }

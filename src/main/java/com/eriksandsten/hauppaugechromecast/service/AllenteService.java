@@ -2,7 +2,7 @@ package com.eriksandsten.hauppaugechromecast.service;
 
 import com.eriksandsten.hauppaugechromecast.domain.Channel;
 import com.eriksandsten.hauppaugechromecast.domain.ChannelProgramme;
-import com.eriksandsten.hauppaugechromecast.domain.allente.AllenteEPG;
+import com.eriksandsten.hauppaugechromecast.domain.epg.EPG;
 import com.eriksandsten.hauppaugechromecast.exception.HttpBadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +28,7 @@ public class AllenteService {
 
     public Map<Channel, List<ChannelProgramme>> currentTVCast;
 
-    public AllenteEPG fetchAllenteEpg(String date) {
+    public EPG fetchAllenteEpg(String date) {
         validateDateString(date);
 
         final String url = UriComponentsBuilder
@@ -37,7 +37,7 @@ public class AllenteService {
                 // .queryParam("category-filter", "")
                 .build()
                 .toUriString();
-        return (AllenteEPG) webClientService.getExternalData(url, AllenteEPG.class).block();
+        return (EPG) webClientService.getExternalData(url, EPG.class).block();
     }
 
     private void validateDateString(String date) {

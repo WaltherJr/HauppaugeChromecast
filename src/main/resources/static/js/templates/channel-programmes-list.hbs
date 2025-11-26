@@ -1,7 +1,7 @@
 <ul class="channel-programmes-day-list">
     <h4 class="channel-programmes-list-{{ todayTomorrowHelper 'className' programmesListIndex}}-heading">{{todayTomorrowHelper 'innerHTML' programmesListIndex }}</h4>
     {{#each programmes as | channelProgramme channelProgrammeIndex|}}
-    <li class="channel-programme-details{{markIfActiveProgramme ../programmes channelProgramme channelProgrammeIndex}}" data-programme-description="{{channelProgramme.description}}" data-programme-image="{{encodeURIHelper channelProgramme.image}}">
+    <li class="channel-programme-details{{markIfActiveProgramme (nowTimestamp) channelProgramme ../programmes channelProgrammeIndex}}" data-programme-description="{{channelProgramme.description}}" data-programme-image="{{encodeURIHelper channelProgramme.image}}">
         <a href="#">
             <span class="channel-programme-name">{{channelProgramme.title}}</span>
             <span class="channel-programme-start-time">{{prettyProgrammeStartTime channelProgramme.time}}</span>

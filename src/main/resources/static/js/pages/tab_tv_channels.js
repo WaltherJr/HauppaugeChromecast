@@ -3,6 +3,7 @@ const lastScrolledHandlerTimeout = parseInt(document.app_config['last_scrolled_h
 
 function changeInspectedChannelListItem() {
     const listItem = $(this);
+    const selectedChannelName = listItem.attr('data-channel-name');
     const isProgrammeDetailsChild = $(event.target).closest('li.channel-programme-details').length !== 0;
     const otherChannelListItemOpen = listItem.siblings('li.programme-list-open').get(0);
     if (otherChannelListItemOpen) {
@@ -11,37 +12,43 @@ function changeInspectedChannelListItem() {
 
     listItem.siblings('li.programme-list-open').removeClass('programme-list-open').find('.flex-parent').css('max-height', '0');
 
+    updatePageQueryParameter('selectedChannel', selectedChannelName);
+    localStorage.setItem('lastSelectedChannel', selectedChannelName);
+
     if (!isProgrammeDetailsChild) {
         // Only toggle list if not clicking on a programme information link
         const newHeight = computeMaxHeightOfChannelListItem(listItem);
-        debugger;
-        const flexParent = listItem.toggleClass('programme-list-open').find('.flex-parent');
-        flexParent.css('max-height', listItem.hasClass('programme-list-open') ? `${Math.round(newHeight)}px` : '0');
+        const flexParent = listItem.find('.flex-parent');
+
         const channelDisplayAnimationDelay = cssFloatToInteger(document.app_config.channel_item_display_animation.duration);
 
-        debugger;
-
         setTimeout(function () {
-            scrollToChannelListItem(listItem);
+            scrollToChannelListItem($('#tab-tv-channels'), listItem, {listContainer: flexParent, listItemHeight: newHeight});
 
         }, channelDisplayAnimationDelay);
     }
 }
 
-function updateProgrammeInfoScrollPositions() {
+function updateProgrammeDescriptionScrollPosition() {
     $('#main-channel-list .flex-parent').each(function(index, element) {
         const marginTop = Math.round(element.scrollTop);
         $(element).find('.currently-inspected-programme-description').css('margin-top', `${marginTop}px`);
     });
 }
 
-function scrollToChannelListItem(listItem) {
-    const $ul = listItem.parent();
-    var topRelativeToUl = listItem.position().top + $ul.scrollTop();
+function scrollToChannelListItem(scrollableContainer, listItem, openListItem) {
+    if (listItem.length !== 0) {
+        const topRelativeToChannelList = listItem.position().top + scrollableContainer.scrollTop();
 
-    $('#main-channel-list').animate({
-            scrollTop: `${Math.round(topRelativeToUl)}px`
-    }, 700);
+        scrollableContainer.animate({
+            scrollTop: `${Math.round(topRelativeToChannelList)}px`
+        }, 700);
+    }
+
+    if (openListItem) {
+        listItem.toggleClass('programme-list-open');
+        openListItem.listContainer.css('max-height', listItem.hasClass('programme-list-open') ? `${Math.round(openListItem.listItemHeight)}px` : '0');
+    }
 }
 
 function setCurrentChannelProgrammesListPosition(mainChannelList) {
@@ -66,13 +73,10 @@ function setResizeObservers(resizeObserversDefs) {
 
 async function setIntersectionObservers() {
     /*
-    debugger;
     const nav = $('#main-left-panel > h2').get();
     const sentinel = $('li[data-channel-name]').get(6);
     const sentinel2 = $(sentinel).find('.channel-programmes-list-tomorrow-heading').get(0);
     const rootElement = document.querySelector('#main-channel-list');
-
-    debugger;
 
     new IntersectionObserver(([e]) => {
         console.log('INTERSECTING 1!');
@@ -102,7 +106,7 @@ setInterval(function() {
     const lastScrolledThreshold = parseInt(document.app_config['last_scrolled_threshold']);
 
     if (document.lastScrolled && new Date() - document.lastScrolled > lastScrolledThreshold) {
-        updateProgrammeInfoScrollPositions();
+        updateProgrammeDescriptionScrollPosition();
         document.lastScrolled = undefined;
     }
 }, lastScrolledHandlerTimeout);

@@ -1,4 +1,4 @@
-package com.eriksandsten.hauppaugechromecast.domain.allente;
+package com.eriksandsten.hauppaugechromecast.domain.epg;
 
 import java.util.List;
 

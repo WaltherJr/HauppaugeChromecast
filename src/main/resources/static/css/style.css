@@ -123,6 +123,7 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 }
 #main-left-panel #tab-tv-channels #inspected-programme-image-container {
   position: fixed;
+  overflow: hidden;
   z-index: 1;
 }
 #main-left-panel #tab-tv-channels #inspected-programme-image-container img {
@@ -204,7 +205,7 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0 0;
-  padding: 20px;
+  padding: 20px 30px 20px 20px;
 }
 #main-left-panel ul#main-channel-list p.currently-inspected-programme-description {
   background-color: rgba(0, 0, 0, 0.5);
@@ -227,7 +228,7 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   color: rgba(255, 255, 255, 0.7);
 }
 #main-left-panel ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details.channel-current-programme > a {
-  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.4);
 }
 #main-left-panel ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details.currently-inspected-programme > a {
   color: white;
@@ -312,6 +313,48 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   grid-template-columns: auto auto auto auto;
 }
 
+#developer-mode-console {
+  position: fixed;
+  background-color: burlywood;
+  box-shadow: inset 0 5px rgba(0, 0, 0, 0.5), 0 -7px 10px rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  box-sizing: border-box;
+  opacity: 0.7;
+}
+
+#developer-mode-messages {
+  height: 250px;
+  overflow-y: scroll;
+}
+#developer-mode-messages li {
+  display: block;
+}
+#developer-mode-messages li > span {
+  display: block;
+  padding: 10px 20px;
+}
+#developer-mode-messages li > span:first-child {
+  float: left;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+body:not(.developer-mode) #developer-mode-console {
+  display: none;
+}
+
+body.developer-mode #developer-mode-console {
+  display: block;
+}
+body.developer-mode #inspected-programme-image-container {
+  overflow: initial;
+}
+body.developer-mode #inspected-programme-image-container img:first-child {
+  opacity: 0.6;
+}
+
 .fixed {
   position: fixed;
 }
@@ -323,7 +366,7 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   padding: 20px;
 }
 
-#main-left-panel, #main-right-panel {
+.app-panel {
   background-color: #f4f4f4;
   border: 5px solid darkslategray;
   margin: 10px; /* Adds spacing between columns */
@@ -335,6 +378,7 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   width: 50vw;
   height: 85vh;
   resize: horizontal;
+  overflow-x: auto;
 }
 #main-left-panel .tab-headings {
   height: 50px;

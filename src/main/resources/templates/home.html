@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="container">
-    <div id="main-left-panel">
+    <div id="main-left-panel" class="app-panel">
         <div class="tabs">
             <ul class="tab-headings">
                 <li class="active-tab"><a href="#tab-tv-channels" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('tv', '-', 'channels')}"></a></li>
@@ -38,10 +38,14 @@
         </div>
 
     </div>
-    <div id="main-right-panel">
+    <div id="main-right-panel" class="app-panel">
         <video id="main-player" src="http://localhost:8080/video/channel.m3u8" controls></video>
     </div>
 </div>
+<div id="developer-mode-console">
+    <ul id="developer-mode-messages"></ul>
+</div>
+
 <script th:src="@{/js/utils/utils.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/

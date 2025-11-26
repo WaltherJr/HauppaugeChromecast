@@ -1,4 +1,9 @@
 
+function toggleDeveloperMode(state) {
+    $('body').toggleClass('developer-mode', state);
+    $('input#developer-mode').prop('checked', state);
+}
+
 loadTestVideo = function() {
     const testVideoUrl = document.getElementById("test-video-url").value;
     const testVideoMimeType = document.getElementById("test-video-mime-type").value;
@@ -9,12 +14,24 @@ loadTestVideo = function() {
         function(errorCode) { console.log('Error code: ' + errorCode); });
 }
 
+function setSelectedChannel() {
+    const queryParams = new URLSearchParams(window.location.search);
+    const selectedChannel = queryParams.get('selectedChannel');
+
+    if (selectedChannel) {
+        scrollToChannelListItem($('#tab-tv-channels'), $(`#main-channel-list > li[data-channel-name="${selectedChannel}"]`));
+
+    } else if (localStorage.getItem('lastSelectedChannel')) {
+        const selectedChannelName = localStorage.getItem('lastSelectedChannel')
+        scrollToChannelListItem($('#tab-tv-channels'), $(`#main-channel-list > li[data-channel-name="${selectedChannelName}"]`));
+        updatePageQueryParameter('selectedChannel', selectedChannelName);
+    }
+}
+
 function computeMaxHeightOfChannelListItem(listItem) {
     const programmesListHeight = listItem.find('.channel-programmes-list-container').outerHeight(true); // Include margins
     const inspectedProgrammeDescription = listItem.find('.currently-inspected-programme-description').outerHeight(true);
     const newHeight = Math.max(programmesListHeight, inspectedProgrammeDescription);
-
-    debugger;
 
     return Math.round(newHeight) + 20;
 }
@@ -62,7 +79,7 @@ $(document).ready(async function() {
         });
 
     setResizeObservers([{
-        selector: '#main-left-panel',
+        selector: '#tab-tv-channels',
         callback: (entry => {
             const newWidth = Math.round(entry.contentRect.width);
             const newHeight = Math.round(entry.contentRect.height);
@@ -78,10 +95,17 @@ $(document).ready(async function() {
         $('#main-left-panel').css('width', `${mainLeftPanelDimensions.width}px`);
     }
 
+    setSelectedChannel();
+
+    $('input#developer-mode').on('change', function() {
+        const developerModeEnabled = $(this).is(':checked');
+        toggleDeveloperMode(developerModeEnabled);
+        localStorage.setItem('developerMode', developerModeEnabled);
+    });
+
     const defaultLocale = document.app_config['default_locale'];
     $('select#language-selection').val(localStorage.getItem('locale') || defaultLocale);
-    /*
-    setInterval(function() {
-        populateChannelList();
-    }, 3 * 60 * 1000);*/
+
+    const developerMode = localStorage.getItem('developerMode');
+    toggleDeveloperMode(!!(developerMode && developerMode === 'true'));
 });

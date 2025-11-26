@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image scaling demo</title>
+    <style>
+        body {
+            width: 80vw;
+            margin: 10% auto;
+            display: flex;
+        }
+
+        body > div:first-child {
+            flex: 1;
+        }
+        body > div:last-child {
+            flex: 3;
+        }
+        label {
+            display: block;
+        }
+        button {
+            padding: 12px 40px;
+        }
+        div#image-wrapper {
+            width: 500px;
+            height: 500px;
+            background-color: seagreen;
+        }
+        img {
+            width: 300px;
+            height: auto;
+            background-color: gainsboro;
+            transform-origin: top left;
+            opacity: .8;
+            outline: 1px solid forestgreen;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        function changeImageDimensions(newImageUrl) {
+            const imageElement = $('img');
+            imageElement.css({'margin-left': '', 'margin-top': ''}).attr('src', newImageUrl).on('load', function() {
+                const imageWrapper = $('div#image-wrapper');
+                const imageWidth = imageElement.width();
+                const imageHeight = imageElement.height();
+                const containerWidth = imageWrapper.width();
+                const containerHeight = imageWrapper.height();
+                const axisScalingToFit = containerWidth - imageWidth > containerHeight - imageHeight ? 'width' : 'height';
+                const scalingRatio = axisScalingToFit === 'width' ? containerWidth / imageWidth : containerHeight / imageHeight;
+                const scalingRatioFixed = scalingRatio.toFixed(2);
+
+                $('#scaling-ratio').html(`Image width: ${imageWidth}<br>Image height: ${imageHeight}<br>Container width: ${containerWidth}<br>Container height: ${containerHeight}<br>Scaling axis: ${axisScalingToFit}<br>Scaling ratio: ${scalingRatio.toString()}<br>Scaling ratio (rounded): ${scalingRatioFixed.toString()}`);
+                imageElement.css('transform', `scale(${scalingRatioFixed})`);
+
+                if ($('#adjust-image-margin').is(':checked')) {
+                    if (axisScalingToFit === 'width') {
+                        const newImageHeight = imageHeight * scalingRatio;
+                        const newMargin = (newImageHeight - containerHeight) / 2;
+                        imageElement.css({'margin-left': `initial`, 'margin-top': `-${newMargin}px`});
+                    } else {
+                        const newImageWidth = imageWidth * scalingRatio;
+                        const newMargin = (newImageWidth - containerWidth) / 2;
+                        imageElement.css({'margin-left': `-${newMargin}px`, 'margin-top': `initial`});
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('button').on('click', function() {
+                changeImageDimensions($('input[type="url"]').val());
+            })
+        });
+    </script>
+</head>
+<body>
+<div>
+    <label>Image url: <input type="url" value="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/960px-Tux.svg.png"></label>
+    <label><input id="adjust-image-margin" type="checkbox" checked> Adjust margin</label>
+    <button>Set image</button>
+    <p id="scaling-ratio"></p>
+</div>
+<div>
+    <div id="image-wrapper">
+        <img src="" alt="image">
+    </div>
+</div>
+</body>
+</html>

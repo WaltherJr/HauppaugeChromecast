@@ -3,17 +3,7 @@ Handlebars.registerHelper('getApplicationConfig', function(key) {
     return document.app_config[key];
 });
 
-Handlebars.registerHelper('markIfActiveProgramme', function(channelProgrammesList, iteratedChannelProgramme, currentIterationIndex) {
-    const iteratedProgrammeStartTime = new Date(iteratedChannelProgramme).date;
-    const nextProgrammeStartTime = currentIterationIndex < channelProgrammesList.length - 1 ? new Date(channelProgrammesList[currentIterationIndex + 1].time) : undefined;
-    const now = new Date();
-
-    if (iteratedProgrammeStartTime <= now && nextProgrammeStartTime && nextProgrammeStartTime > now) { // TODO: not 100% correct
-        return ' channel-current-programme';
-    }
-
-    return '';
-});
+Handlebars.registerHelper('nowTimestamp', () => new Date());
 
 Handlebars.registerHelper('todayTomorrowHelper', function(type, index) {
     if (type === 'className') {

@@ -3,6 +3,7 @@
 @use 'base';
 @use 'animation';
 @use 'fragments';
+@use 'developer-mode';
 @use 'pages/tab_tv_channels/player-bottom-panel';
 
 $main-left-panel-width: 50vw;
@@ -20,7 +21,7 @@ $main-menu-height: 50px;
     padding: 20px;
 }
 
-#main-left-panel, #main-right-panel {
+.app-panel {
     background-color: #f4f4f4;
     border: 5px solid base.$color3;
     margin: 10px; /* Adds spacing between columns */
@@ -32,7 +33,7 @@ $main-menu-height: 50px;
     // flex: 3;
     width: $main-left-panel-width;
     height: $main-container-height;
-    resize: horizontal;
+    @include base.resizable('x');
 
     .tab-headings {
       height: $main-menu-height;

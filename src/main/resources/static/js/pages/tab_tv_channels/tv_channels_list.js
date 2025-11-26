@@ -1,6 +1,14 @@
 
+Handlebars.registerHelper('markIfActiveProgramme', markIfActiveProgramme);
+setInterval(function() {
+    callAppFunction('apansson', 'Refreshing channel list...');
+}, 1000 * 10/* 3 * 60 * 1000 */);
+
+function apansson() {
+    console.log('HAHA!');
+}
+
 function showProgrammeDetails(programmeAnchorElement, programmeImageUrl, programmeDescription) {
-    debugger;
     const listItem = programmeAnchorElement.closest('li').parent().closest('li');
     const alreadyInspectedProgrammeInfoBox = listItem.find('p.currently-inspected-programme-description');
     const fadeAnimationDuration = document.app_config.programme_info_fade_animation.duration;
@@ -23,32 +31,47 @@ function showProgrammeDetails(programmeAnchorElement, programmeImageUrl, program
     });
 }
 
-function markIfActiveProgramme(iteratedProgrammeStartTime, channelProgrammeListItem, channelProgrammesDayList, j) {
-    const nextProgrammeStartTime = j < channelProgrammesDayList.length - 1 ? new Date(channelProgrammesDayList[j + 1].time) : undefined;
-    const now = new Date();
+function markIfActiveProgramme(nowTimestamp, channelProgrammeListItem, channelProgrammesDayList, iteratedProgrammeIndex) {
+    const nextProgrammeStartTime = iteratedProgrammeIndex < channelProgrammesDayList.length - 1 ? new Date(channelProgrammesDayList[iteratedProgrammeIndex + 1].time) : undefined;
+    const iteratedProgrammeStartTime = new Date(channelProgrammeListItem.time);
 
-    if (iteratedProgrammeStartTime <= now && nextProgrammeStartTime && nextProgrammeStartTime > now) { // TODO: not 100% correct
-        channelProgrammeListItem.addClass('channel-current-programme');
-        return true;
+    if (iteratedProgrammeStartTime <= nowTimestamp && nextProgrammeStartTime && nextProgrammeStartTime > nowTimestamp) { // TODO: not 100% correct
+        return ' ' + 'channel-current-programme';
     }
 
-    return false;
+    return '';
 }
 
 function clearInspectedProgrammeImages() {
     $('#inspected-programme-image-container > img').remove(); // TODO: add animations etc.
 }
 
+function scaleChannelProgrammeImage(imageElement, imageWrapper) {
+    const imageWidth = imageElement.width;
+    const imageHeight = imageElement.height;
+    const containerWidth = imageWrapper.width();
+    const containerHeight = imageWrapper.height();
+    const axisScalingToFit = containerWidth - imageWidth > containerHeight - imageHeight ? 'x' : 'y';
+    const scalingRatio = axisScalingToFit === 'x' ? containerWidth / imageWidth : containerHeight / imageHeight;
+    const scalingRatioFixed = scalingRatio.toFixed(2);
+
+    return {
+        axis: axisScalingToFit,
+        ratio: scalingRatioFixed,
+        margins: axisScalingToFit === 'x' ?
+            {'margin-left': '', 'margin-top' : `-${((imageHeight * scalingRatio) - containerHeight)  / 2}px`} :
+            {'margin-left': `${((imageWidth * scalingRatio) - containerWidth) / 2}px`, 'margin-top': ''}
+    }
+}
+
 function setInspectedProgrammeImage(newImageUrl, newImageDimensions) {
     const inspectedProgrammeImageContainer = $('#inspected-programme-image-container');
     const inspectedProgrammeImages = inspectedProgrammeImageContainer.children('img');
     const imageContainerDimensions = {width: inspectedProgrammeImageContainer.width(), height: inspectedProgrammeImageContainer.height()};
-
-    debugger;
-
     const imageHasSufficientWidth = newImageDimensions.width >= imageContainerDimensions.width;
     const imageHasSufficientHeight = newImageDimensions.height >= imageContainerDimensions.height;
     let cssTransforms = [];
+    let scalingParameters;
 
     if (imageHasSufficientWidth && !imageHasSufficientHeight) {
         cssTransforms.push({width: 'auto', height: '100%'});
@@ -57,9 +80,13 @@ function setInspectedProgrammeImage(newImageUrl, newImageDimensions) {
     } else if (imageHasSufficientWidth && imageHasSufficientHeight) {
         cssTransforms.push({width: '100%', height: 'auto'});
     } else {
-        // Image has not sufficient width, nor sufficient height
-        cssTransforms.push({transform: 'scale(2)'}); // TODO: add width or height transform
+        // Image has not sufficient width, nor sufficient height - scale it
+        scalingParameters = scaleChannelProgrammeImage(newImageDimensions, inspectedProgrammeImageContainer);
+        cssTransforms.push({transform: `scale(${scalingParameters.ratio})`});
     }
+
+    cssTransforms.push(scalingParameters ? scalingParameters.margins :
+        {'transform': '', 'margin-left': '', 'margin-top': ''});
 
     if (inspectedProgrammeImages.length === 0 || inspectedProgrammeImages.length === 1) {
         const newImage = $(document.createElement('img')).attr('src', newImageUrl).css('z-index', '2');
