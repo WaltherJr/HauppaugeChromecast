@@ -1,6 +1,19 @@
 
 const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
+function setActiveTab(event) {
+    event.preventDefault();
+    setActiveTabContent($(this).closest('li'), $(this).attr('href'));
+}
+
+function setActiveTabContent(contentTabOrTabHeading, hash) {
+    const tabIndex = $(contentTabOrTabHeading).index() + 1;
+    const tabsContainer = $(contentTabOrTabHeading).closest('.tabs');
+    const items = tabsContainer.find(`.tab-headings > li:nth-child(${tabIndex}), .tab-content-wrapper > li:nth-child(${tabIndex})`);
+    items.addClass('active-tab').siblings().removeClass('active-tab');
+    window.location.hash = hash;
+}
+
 function reloadPageSearchParams(callback) {
     const url = new URL(window.location);
     callback(url.searchParams);

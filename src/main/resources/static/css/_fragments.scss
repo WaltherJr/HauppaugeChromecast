@@ -1,5 +1,4 @@
 
-@use 'fragments/locale-selection';
-@use 'fragments/main-channel-list';
-@use 'fragments/player-bottom-panel';
-@use 'fragments/debug_overlay';
+@use 'pages/tab_tv_channels';
+@use 'pages/tab_tv_channels/player-bottom-panel';
+@use 'pages/tab_settings';

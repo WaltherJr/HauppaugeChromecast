@@ -6,7 +6,7 @@ function changeInspectedChannelListItem() {
     const isProgrammeDetailsChild = $(event.target).closest('li.channel-programme-details').length !== 0;
     const otherChannelListItemOpen = listItem.siblings('li.programme-list-open').get(0);
     if (otherChannelListItemOpen) {
-        setInspectedProgrammeImage(null); // Reset inspected programme image
+        clearInspectedProgrammeImages(); // Reset inspected programme image
     }
 
     listItem.siblings('li.programme-list-open').removeClass('programme-list-open').find('.flex-parent').css('max-height', '0');
@@ -57,11 +57,11 @@ function setCurrentChannelProgrammesListPosition(mainChannelList) {
     });
 }
 
-function setResizeObservers() {
-    const observer = new ResizeObserver(entries => {
-        localStorage.setItem("main-left-panel-dimensions", JSON.stringify({width: Math.round(entries[0].contentRect.width)}));
-    });
-    observer.observe(document.getElementById('main-left-panel'));
+function setResizeObservers(resizeObserversDefs) {
+    resizeObserversDefs.forEach(resizeObserverDef => {
+        const observer = new ResizeObserver(entries => resizeObserverDef.callback(entries[0]));
+        observer.observe($(resizeObserverDef.selector).get(0));
+    })
 }
 
 async function setIntersectionObservers() {

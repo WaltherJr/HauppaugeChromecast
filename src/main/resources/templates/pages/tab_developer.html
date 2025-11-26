@@ -1,13 +1,12 @@
-<th:block th:fragment="header">
-
-    <h4>Heading 1</h4>
+<th:block>
+    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('chromecast', 'testing', 'and', 'configuration')}"></h4>
         <label for="chromecast-info-url" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('chromecast', 'url', ':')}"></label>
-        <input id="chromecast-info-url" name="chromecast-info-url" type="url" value="http://192.168.31.242:8008/setup/eureka_info">
-        <button id="fetch-chromecast-info-btn" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('fetch', 'chromecast', 'information')}"></button>
+        <input id="chromecast-info-url" name="chromecast-info-url" type="url">
+        <button id="display-chromecast-info-btn" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('display', 'chromecast', 'information')}"></button>
         <span>Hello</span>
 
 
-    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('test{2}', 'of', 'video', '-[locale=sv-SE]', 'stream{2}')}"></h4>
+    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('testing', 'of', 'video', '-[locale=sv-SE]', 'stream{2}')}"></h4>
         <label for="test-video-url" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('video', 'url', ':')}"></label>
         <select id="test-video-url">
             <option value="https://examplefiles.org/files/video/mp4-example-video-download-full-hd-1920x1080.mp4">https://examplefiles.org/files/video/mp4-example-video-download-full-hd-1920x1080.mp4</option>
@@ -17,10 +16,10 @@
         <button id="load-test-video-btn" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('stream', 'test', 'video', 'to', 'chromecast')}"></button>
     <!--/*<label for="test-video-mime-type" th:text="#{mime_type}"></label><input id="test-video-mime-type" type="text" value="video/mp4"></label>*/-->
 
-    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('current', 'channel', '-', 'programmes')}">Heading 3</h4>
+    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('current', 'channel', '-', 'programmes')}"></h4>
         <input type="text" th:value="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy-MM-dd')}">
         <input type="text" placeholder="00:00">
         <button id="test-active-programme-btn" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('display', 'current', 'channel', '-[locale=sv-SE]', 'programmes')}"></button>
 
-    <!--<script th:src="@{/js/debug_overlay.js}"></script>-->
+    <script th:src="@{/js/tab_settings.js}"></script>
 </th:block>

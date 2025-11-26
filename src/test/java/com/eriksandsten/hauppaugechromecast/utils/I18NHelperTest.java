@@ -13,6 +13,6 @@ public class I18NHelperTest {
         assertEquals("Video URL:", I18NHelper.buildString("video", "url", ":"));
         assertEquals("Valt språk", I18NHelper.buildString("chosen", "language"));
         assertEquals("Valt språk", I18NHelper.buildString("chosen", "language"));
-        assertEquals("Test av video-ström", I18NHelper.buildString("test{2}", "of", "video", "-[locale=sv-SE]", "stream{2}"));
+        assertEquals("Test av video-ström", I18NHelper.buildString("testing", "of", "video", "-[locale=sv-SE]", "stream{2}"));
     }
 }

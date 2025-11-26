@@ -1,6 +1,6 @@
 
 @use '../base';
-@use 'channel-programme-information';
+@use 'tab_tv_channels/channel-programme-information';
 @use 'sass:color';
 
 $programme-list-teaser-height: 50px;
@@ -12,13 +12,23 @@ $channel-programmes-list-container-padding: 20px;
 #main-left-panel {
   position: relative;
 
-  & > .tabs .tab-headings > li {
-    margin: 0;
-    display: inline-block;
+  #tab-tv-channels {
+    position: relative;
 
-    a {
-      display: block;
-      padding: 0 30px;
+    #inspected-programme-image-container {
+      position: fixed;
+      z-index: 1;
+
+      img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+    }
+
+    & > .grid {
+      grid-auto-rows: initial !important;
     }
   }
 
@@ -40,21 +50,6 @@ $channel-programmes-list-container-padding: 20px;
         .zap-to-channel-btn {
           // opacity: 1;
           margin-left: 10px !important;
-        }
-      }
-
-      &#inspected-programme-image-container {
-        position: sticky;
-        top: 0; // Needed for position: sticky to work
-        height: 0;
-        overflow: visible;
-
-        & > img {
-          width: auto;
-          // height: // Set programmatically
-          position: absolute;
-          top: 0;
-          left: 0;
         }
       }
 

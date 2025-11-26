@@ -77,6 +77,7 @@ input[type="url"], input[type="text"] {
 
 .grid {
   display: grid;
+  grid-auto-rows: 50px;
 }
 
 .tabs {
@@ -95,24 +96,25 @@ input[type="url"], input[type="text"] {
     }
   }
 
-  & > .tab-content {
+  & > .tab-content-wrapper > li {
+    position: absolute;
+    overflow-y: scroll;
+    left: 0;
+    top: 0;
+    background-color: gainsboro;
+
+    &.active-tab {
+      z-index: 1;
+    }
+  }
+
+  .tab-content {
     position: relative;
 
     h4 {
+      margin: 0;
       background-color: goldenrod;
       grid-column: 1 / span 4;
-    }
-
-    & > li {
-      display: grid;
-      position: absolute;
-      overflow-y: scroll;
-      left: 0;
-      top: 0;
-
-      &.active-tab {
-        z-index: 1;
-      }
     }
   }
 }

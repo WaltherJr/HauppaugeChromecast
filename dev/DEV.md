@@ -12,6 +12,8 @@ ffmpeg -i /dev/dvb/adapter0/frontend0 \
   stream.m3u8
 ```
 
+Chromecast information URL: http://192.168.31.242:8008/setup/eureka_info
+
 "Note: You need the data right format in this file. Different scanning programs produce different output formats. For example w_scan must be run with the '-X' argument to obtain a channels.conf suitable for 'tzap'."
 Lista V4l (video) och DVB devices: `v4l2-ctl --list-devices`
 Tuna in TV-kanaler (samt hitta namn för tunern): 

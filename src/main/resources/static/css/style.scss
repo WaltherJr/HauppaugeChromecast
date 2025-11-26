@@ -3,7 +3,7 @@
 @use 'base';
 @use 'animation';
 @use 'fragments';
-@use 'fragments/player-bottom-panel';
+@use 'pages/tab_tv_channels/player-bottom-panel';
 
 $main-left-panel-width: 50vw;
 $main-container-height: 85vh;
@@ -38,14 +38,24 @@ $main-menu-height: 50px;
       height: $main-menu-height;
       line-height: $main-menu-height;
       position: absolute;
-      top: 100%;
+      z-index: 3;
       left: 0;
+      bottom: 0;
+
+      > li {
+        margin: 0;
+        display: inline-block;
+
+        a {
+          display: block;
+          padding: 0 30px;
+        }
+      }
     }
 
-    & > .tabs > .tab-content > li {
+    & > .tabs > .tab-content-wrapper > li {
       width: 100%;
       height: calc(#{$main-container-height} - #{$main-menu-height});
-      background-color: gainsboro;
     }
 }
 

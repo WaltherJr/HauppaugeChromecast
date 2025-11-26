@@ -45,6 +45,7 @@ input[type=url], input[type=text] {
 
 .grid {
   display: grid;
+  grid-auto-rows: 50px;
 }
 
 .tabs > .tab-headings {
@@ -59,22 +60,23 @@ input[type=url], input[type=text] {
 .tabs > .tab-headings > li.active-tab {
   background-color: rgba(0, 0, 0, 0.4);
 }
-.tabs > .tab-content {
-  position: relative;
-}
-.tabs > .tab-content h4 {
-  background-color: goldenrod;
-  grid-column: 1/span 4;
-}
-.tabs > .tab-content > li {
-  display: grid;
+.tabs > .tab-content-wrapper > li {
   position: absolute;
   overflow-y: scroll;
   left: 0;
   top: 0;
+  background-color: gainsboro;
 }
-.tabs > .tab-content > li.active-tab {
+.tabs > .tab-content-wrapper > li.active-tab {
   z-index: 1;
+}
+.tabs .tab-content {
+  position: relative;
+}
+.tabs .tab-content h4 {
+  margin: 0;
+  background-color: goldenrod;
+  grid-column: 1/span 4;
 }
 
 .fade-in {
@@ -97,20 +99,6 @@ input[type=url], input[type=text] {
     opacity: 0;
   }
 }
-#locale-selection img {
-  width: 25px;
-  height: auto;
-}
-#locale-selection button {
-  padding: 0;
-  background-color: rgb(200.1086956522, 197.1811594203, 158.3913043478);
-  border: none;
-}
-
-#locale-selection button:not(.active-locale) {
-  filter: contrast(0.3);
-}
-
 ul#main-channel-list div.inspected-channel-programme-info {
   position: absolute;
   left: 0;
@@ -130,13 +118,21 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 #main-left-panel {
   position: relative;
 }
-#main-left-panel > .tabs .tab-headings > li {
-  margin: 0;
-  display: inline-block;
+#main-left-panel #tab-tv-channels {
+  position: relative;
 }
-#main-left-panel > .tabs .tab-headings > li a {
-  display: block;
-  padding: 0 30px;
+#main-left-panel #tab-tv-channels #inspected-programme-image-container {
+  position: fixed;
+  z-index: 1;
+}
+#main-left-panel #tab-tv-channels #inspected-programme-image-container img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+}
+#main-left-panel #tab-tv-channels > .grid {
+  grid-auto-rows: initial !important;
 }
 #main-left-panel ul#main-channel-list {
   margin: 0;
@@ -155,18 +151,6 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 }
 #main-left-panel ul#main-channel-list > li:hover .zap-to-channel-btn {
   margin-left: 10px !important;
-}
-#main-left-panel ul#main-channel-list > li#inspected-programme-image-container {
-  position: sticky;
-  top: 0;
-  height: 0;
-  overflow: visible;
-}
-#main-left-panel ul#main-channel-list > li#inspected-programme-image-container > img {
-  width: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 #main-left-panel ul#main-channel-list > li > .flex-parent {
   max-height: 0;
@@ -356,13 +340,21 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   height: 50px;
   line-height: 50px;
   position: absolute;
-  top: 100%;
+  z-index: 3;
   left: 0;
+  bottom: 0;
 }
-#main-left-panel > .tabs > .tab-content > li {
+#main-left-panel .tab-headings > li {
+  margin: 0;
+  display: inline-block;
+}
+#main-left-panel .tab-headings > li a {
+  display: block;
+  padding: 0 30px;
+}
+#main-left-panel > .tabs > .tab-content-wrapper > li {
   width: 100%;
   height: calc(85vh - 50px);
-  background-color: gainsboro;
 }
 
 #main-right-panel {

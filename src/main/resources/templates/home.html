@@ -18,35 +18,20 @@
                 <li><a href="#tab-settings" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('settings')}"></a></li>
                 <li><a href="#tab-developer" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('developer')}"></a></li>
             </ul>
-            <ul class="grid tab-content">
+            <ul class="tab-content-wrapper">
                 <li id="tab-tv-channels">
                     <div class="grid tab-content">
-                        <ul id="main-channel-list"><li id="inspected-programme-image-container"><img src="" alt=""></li></ul>
-                        <!--/*
-                        <div id="player-bottom-panel">
-                            <div id="player-controls">
-                                <button><google-cast-launcher></google-cast-launcher></button>
-                                <button id="epg-btn"><span class="material-symbols-sharp">list_alt</span></button>
-                                <button id="channel-back-btn"><span class="material-symbols-sharp">arrow_back_ios</span></button>
-                                <button id="pause-play-btn"><span class="material-symbols-sharp">play_circle</span></button>
-                                <button id="channel-forward-btn"><span class="material-symbols-sharp">arrow_forward_ios</span></button>
-                            </div>
-                            <div id="locale-selection">
-                                <button id="locale-en" data-locale-key="en" th:class="${@requestHelper.isCurrentLocale('en') ? 'active-locale' : ''}"><img src="https://cdn-icons-png.flaticon.com/512/197/197374.png" alt="English flag icon"></button>
-                                <button id="locale-sv" data-locale-key="sv-SE" th:class="${@requestHelper.isCurrentLocale('sv-SE') ? 'active-locale' : ''}"><img src="https://cdn-icons-png.flaticon.com/512/197/197564.png" alt="Swedish flag icon"></button>
-                            </div>
-                        </div>
-                        */-->
+                        <th:block th:include="pages/tab_tv_channels"></th:block>
                     </div>
                 </li>
                 <li id="tab-settings">
                     <div class="grid tab-content">
-                        <th:block th:include=fragments/settings></th:block>
+                        <th:block th:include="pages/tab_settings"></th:block>
                     </div>
                 </li>
                 <li id="tab-developer">
                     <div class="grid tab-content">
-                        <th:block th:if="${debug != null}" th:include="fragments/debug_overlay :: header"></th:block>
+                        <th:block th:include="pages/tab_developer"></th:block>
                     </div>
                 </li>
             </ul>
@@ -57,10 +42,11 @@
         <video id="main-player" src="http://localhost:8080/video/channel.m3u8" controls></video>
     </div>
 </div>
-<script th:src="@{/js/utils.js}"></script>
+<script th:src="@{/js/utils/utils.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
     document.app_config = {
+        default_locale: [[${@environment.getProperty('app.default_locale')}]],
         programme_info_fade_animation: {
           duration: [[${@environment.getProperty('app.programme_info_fade_animation_duration')}]]
         },
@@ -78,10 +64,10 @@
 /*]]>*/
 </script>
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
-<script th:src="@{/js/cast.js}"></script>
-<script th:src="@{/js/handlebars.js}"></script>
+<script th:src="@{/js/google_cast.js}"></script>
+<script th:src="@{/js/utils/handlebars.js}"></script>
 <script th:src="@{/js/home.js}"></script>
-<script th:src="@{/js/channel-programmes-list.js}"></script>
-<script th:src="@{/js/tv_channels_list.js}"></script>
+<script th:src="@{/js/pages/tab_tv_channels.js}"></script>
+<script th:src="@{/js/pages/tab_tv_channels/tv_channels_list.js}"></script>
 </body>
 </html>

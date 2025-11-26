@@ -9,16 +9,6 @@ loadTestVideo = function() {
         function(errorCode) { console.log('Error code: ' + errorCode); });
 }
 
-document.getElementById("load-test-video-btn").addEventListener("click", function() {
-    loadTestVideo();
-});
-
-$('#locale-selection > button').on('click', function() {
-    const url = new URL(window.location);
-    url.searchParams.set('lang', $(this).attr('data-locale-key'));x
-    window.location = url;
-});
-
 function computeMaxHeightOfChannelListItem(listItem) {
     const programmesListHeight = listItem.find('.channel-programmes-list-container').outerHeight(true); // Include margins
     const inspectedProgrammeDescription = listItem.find('.currently-inspected-programme-description').outerHeight(true);
@@ -31,6 +21,11 @@ function computeMaxHeightOfChannelListItem(listItem) {
 
 $(document).ready(async function() {
     const mainChannelList = $('#main-channel-list');
+
+    if(window.location.hash) {
+        const startingTab = $(window.location.hash);
+        setActiveTabContent(startingTab, window.location.hash);
+    }
 
     await populateChannelList([getFormattedDate(0), getFormattedDate(1)], mainChannelList.outerHeight())
         .then(() => {
@@ -57,31 +52,34 @@ $(document).ready(async function() {
         }).on('click', '.zap-to-channel-btn', function() {
             zapToChannel($(this).closest('[data-channel-name]').attr('data-channel-name'));
 
-        }).on('click', '.tabs > .tab-headings a', function(event) {
-            event.preventDefault();
-            const listItem = $(this).closest('li');
-            const listItemIndex = listItem.index();
-            const activeTab = listItem.parent().siblings('.tab-content').children().get(listItemIndex);
-
-            listItem.addClass('active-tab').siblings().removeClass('active-tab');
-            $(activeTab).addClass('active-tab').siblings().removeClass('active-tab');
-
-        }).on('change', 'select#language-selection', function() {
-            console.log($(this).val());
+        }).on('click', '.tabs > .tab-headings a', setActiveTab)
+        .on('change', 'select#language-selection', function() {
+            localStorage.setItem('locale', $(this).val());
             reloadPageSearchParams((pageSearchParams) => pageSearchParams.set('lang', $(this).val()));
 
+        }).on('click', '#load-test-video-btn', function() {
+            loadTestVideo();
         });
 
-    setResizeObservers();
+    setResizeObservers([{
+        selector: '#main-left-panel',
+        callback: (entry => {
+            const newWidth = Math.round(entry.contentRect.width);
+            const newHeight = Math.round(entry.contentRect.height);
+
+            localStorage.setItem("main-left-panel-dimensions", JSON.stringify({width: newWidth}));
+            $('#inspected-programme-image-container').css({width: `${newWidth}px`, height: `${newHeight}px`});
+        })
+    }]);
+
     const mainLeftPanelDimensions = JSON.parse(localStorage.getItem("main-left-panel-dimensions") || '{}');
+
     if (mainLeftPanelDimensions) {
-        mainChannelList.css('width', `${mainLeftPanelDimensions.width}px`);
+        $('#main-left-panel').css('width', `${mainLeftPanelDimensions.width}px`);
     }
 
-    const inspectedProgrammeImage = $('#inspected-programme-image-container > img');
-    const newImageHeight = Math.round(mainChannelList.outerHeight());
-    inspectedProgrammeImage.css('height', `${newImageHeight}px`);
-    debugger;
+    const defaultLocale = document.app_config['default_locale'];
+    $('select#language-selection').val(localStorage.getItem('locale') || defaultLocale);
     /*
     setInterval(function() {
         populateChannelList();
