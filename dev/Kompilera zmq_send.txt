@@ -1,0 +1,1 @@
+make CFLAGS+="-I.." LDFLAGS+="-L/home/erik/ffmpeg/libavcodec -L/home/erik/ffmpeg/libavdevice -L/home/erik/ffmpeg/libavfilter -L/home/erik/ffmpeg/libavformat -L/home/erik/ffmpeg/libavutil" LDLIBS="-lavcodec -lavdevice -lavfilter -lavformat -lavutil -lzmq" zmqsend

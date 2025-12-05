@@ -1,0 +1,20 @@
+
+@use 'sass:color';
+
+// Dimensions
+$main-left-panel-width: 50vw;
+$main-container-height: 85vh;
+$main-menu-height: 50px;
+
+// Fonts
+$material-rounded-font: 'Material Symbols Rounded', serif;
+
+// Colors
+$color1: #9a9878;
+$color2: darkkhaki;
+$color3: darkslategray;
+$lighter-darkkhaki: color.scale(#84804b, $lightness: 50%);
+$golden-rod: darkgoldenrod;
+$lighter-golden-rod: color.adjust($golden-rod, $lightness: 12%);
+$slate-gray: darkslategray;
+$lighter-slate-gray: color.adjust($slate-gray, $lightness: 12%);

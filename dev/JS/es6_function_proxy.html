@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ES6 Proxy</title>
+</head>
+<body>
+    <script>
+        function sayHello(msg, number) {
+            return `Hello ${msg}[${number}]`;
+        }
+
+        let functionProxy = new Proxy(sayHello, {
+            apply(target, thisArg, argumentsList) {
+                console.log(`Saying hello before calling function: ${argumentsList}`);
+                return target(...argumentsList);
+            },
+        });
+
+        console.log(`Function call result: ${functionProxy('area', 52)}!`);
+    </script>
+</body>
+</html>

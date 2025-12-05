@@ -4,19 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HauppaugeChromecast</title>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp" rel="stylesheet" />
     <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="https://unpkg.com/prettier@3.7.1/standalone.js"></script>
+    <script src="https://unpkg.com/prettier@3.7.1/plugins/babel.js"></script>
+    <script src="https://unpkg.com/prettier@3.7.1/plugins/estree.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link id="hljs-theme" rel="stylesheet" th:href="|https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/${highlightJsTheme}.css|">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=ad_group_off,arrow_drop_down,casino,chess,close_small,devices,keep,keep_off,touchpad_mouse,touchpad_mouse_off">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=ad_group_off,backspace,devices,keyboard_arrow_down,keyboard_arrow_up,touchpad_mouse,touchpad_mouse_off"><!-- Static icon font -->
 </head>
 <body>
 <div class="container">
-    <div id="main-left-panel" class="app-panel">
+    <div id="main-left-panel" class="app-panel" th:style="|width: ${mainLeftPanelWidth}px|">
         <div class="tabs">
             <ul class="tab-headings">
-                <li class="active-tab"><a href="#tab-tv-channels" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('tv', '-', 'channels')}"></a></li>
-                <li><a href="#tab-settings" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('settings')}"></a></li>
-                <li><a href="#tab-developer" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('developer')}"></a></li>
+                <li class="active-tab"><a href="#tab-tv-channels" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('tv', '-', 'channels')}"></a></li>
+                <li><a href="#tab-settings" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('settings')}"></a></li>
+                <li><a href="#tab-developer" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('developer')}"></a></li>
             </ul>
             <ul class="tab-content-wrapper">
                 <li id="tab-tv-channels">
@@ -36,42 +43,50 @@
                 </li>
             </ul>
         </div>
-
+        <div id="main-left-panel-resize-bar" class="resize-bar no-drag-image" draggable="true" data-resize-target="#main-left-panel" data-resize-target-prop="width"></div>
     </div>
     <div id="main-right-panel" class="app-panel">
-        <video id="main-player" src="http://localhost:8080/video/channel.m3u8" controls></video>
+        <video id="main-player" src="http://localhost:8080/video/output.webm" controls></video>
     </div>
 </div>
-<div id="developer-mode-console">
-    <ul id="developer-mode-messages"></ul>
+<div id="developer-mode-console" th:data-initial-height="${@environment.getProperty('app.developer_console.initial-height')}">
+    <th:block th:include="pages/developer_console"></th:block>
 </div>
-
-<script th:src="@{/js/utils/utils.js}"></script>
 <script th:inline="javascript">
 /*<![CDATA[*/
     document.app_config = {
+        I18NStrings: JSON.parse([[${i18nStrings}]]),
         default_locale: [[${@environment.getProperty('app.default_locale')}]],
-        programme_info_fade_animation: {
-          duration: [[${@environment.getProperty('app.programme_info_fade_animation_duration')}]]
-        },
-        channel_item_display_animation: {
-            duration: [[${@environment.getProperty('app.channel_item_display_animation_duration')}]]
+        animations: {
+            developer_console_message_insert_animation: {
+                duration: [[${@environment.getProperty('app.animations.developer_console_message_insert_animation_duration')}]]
+            },
+            programme_info_fade_animation: {
+                duration: [[${@environment.getProperty('app.animations.programme_info_fade_animation_duration')}]]
+            },
+            channel_item_display_animation: {
+                duration: [[${@environment.getProperty('app.animations.channel_item_display_animation_duration')}]]
+            }
         },
         channel_programmes_day_list_captions: {
-            today: capitalize([[#{today}]]),
-            tomorrow: capitalize([[#{tomorrow}]])
+            today: [[#{today}]],
+            tomorrow: [[#{tomorrow}]]
         },
-        channel_image_alt_text: capitalize([[#{channel_icon}]]),
+        developer_console: {
+            last_inserted_message_cluster_threshold: [[${@environment.getProperty('app.developer_console.last_inserted_message_cluster_threshold')}]],
+            animation_duration: [[${@environment.getProperty('app.animations.channel_item_display_animation_duration')}]],
+            message_limit: parseInt([[${@environment.getProperty('app.developer_console.message_limit')}]]),
+        },
+        channel_image_alt_text: [[#{channel_icon}]],
         last_scrolled_threshold: [[${@environment.getProperty('app.last_scrolled_threshold')}]],
         last_scrolled_handler_timeout: [[${@environment.getProperty('app.last_scrolled_handler_timeout')}]]
     }
 /*]]>*/
 </script>
-<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+<script th:src="@{/js/pages/tab_tv_channels.js}" type="module"></script>
+<script th:src="@{/js/pages/tab_tv_channels/tv_channels_list.js}" type="module"></script>
 <script th:src="@{/js/google_cast.js}"></script>
-<script th:src="@{/js/utils/handlebars.js}"></script>
-<script th:src="@{/js/home.js}"></script>
-<script th:src="@{/js/pages/tab_tv_channels.js}"></script>
-<script th:src="@{/js/pages/tab_tv_channels/tv_channels_list.js}"></script>
+<script th:src="@{/js/utils/handlebars.js}" type="module"></script>
+<script th:src="@{/js/home.js}" type="module"></script>
 </body>
 </html>

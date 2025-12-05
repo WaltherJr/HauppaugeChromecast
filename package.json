@@ -1,0 +1,19 @@
+{
+  "name": "hauppaugechromecast",
+  "version": "1.0.0",
+  "description": "Streaming TV application that uses the Hauppaugee [WinTV SoloHD](https://www.hauppauge.co.uk/site/products/data_solohd.html) TV tuner and [Google Chromecast](https://developers.google.com/cast) to stream [DVB](https://sv.wikipedia.org/wiki/Digital_Video_Broadcasting) live TV  (using [HLS](https://en.wikipedia.org/wiki/HTTP_Live_Streaming) - version 2 will use [WebRTC](https://en.wikipedia.org/wiki/WebRTC))",
+  "main": "src/main/js/index.js",
+  "scripts": {
+    "gen_proxy_functions": "node src/main/js/gen_proxy_functions.js 'src/main/resources/static/js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WaltherJr/HauppaugeChromecast.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WaltherJr/HauppaugeChromecast/issues"
+  },
+  "homepage": "https://github.com/WaltherJr/HauppaugeChromecast#readme"
+}

@@ -10,7 +10,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 
@@ -24,6 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.projectlombok:lombok'
+    implementation 'org.xerial:sqlite-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.rocksdb:rocksdbjni:10.4.2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -31,4 +32,35 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register('compileCSS', Exec) {
+    group = "Other"
+    description = "Compiles Sass CSS files"
+    onlyIf {
+        project.findProperty("springProfile") == "dev"
+    }
+
+    def cssDirectory = "$projectDir/src/main/resources/static/css/"
+
+    doFirst {
+        def oldCSSFile = file "$cssDirectory/style.css"
+        if (oldCSSFile.exists()) {
+            println "Deleting ${oldCSSFile}"
+            oldCSSFile.delete()
+        }
+
+        file(cssDirectory).mkdirs()
+    }
+
+    workingDir = file("$cssDirectory")
+
+    commandLine 'dart-sass', '--no-source-map', 'style.scss', 'style.css'
+}
+
+tasks.named('bootRun') {
+    dependsOn tasks.named('compileCSS')
+}
+tasks.named('build') {
+    dependsOn tasks.named('compileCSS')
 }

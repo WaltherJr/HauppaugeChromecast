@@ -67,8 +67,8 @@ static int delsys = 0;
 static int femon = 0;
 static int acoustical = 0;
 static int timeout_flag = 0;
-static void do_timeout(int x)
-{
+
+static void do_timeout(int x) {
         (void)x;
         if (timeout_flag == 0) {
                 timeout_flag = 1;
@@ -79,14 +79,15 @@ static void do_timeout(int x)
                 exit(1);
         }
 }
+
 #define PERROR(x...)                                                    \
         do {                                                            \
                 fprintf(stderr, _("ERROR: "));                          \
                 fprintf(stderr, x);                                     \
                 fprintf(stderr, " (%s)\n", strerror(errno));            \
         } while (0)
-static error_t parse_opt(int k, char *arg, struct argp_state *state)
-{
+
+static error_t parse_opt(int k, char *arg, struct argp_state *state) {
         switch (k) {
         case 'a':
                 adapter = atoi(arg);
@@ -139,9 +140,8 @@ static struct argp argp = {
         .parser = parse_opt,
         .doc = doc,
 };
-static int print_frontend_stats(FILE *fd,
-                                struct dvb_v5_fe_parms *parms)
-{
+
+static int print_frontend_stats(FILE *fd, struct dvb_v5_fe_parms *parms) {
         char buf[512], *p;
         int rc, i, len, show, n_status_lines = 0;
         rc = dvb_fe_get_stats(parms);
@@ -206,10 +206,11 @@ static int print_frontend_stats(FILE *fd,
                                                 fprintf(fd, "\a");
                                 }
                         }
-                        if (n_status_lines)
-                                fprintf(fd, "\t%s\n", buf);
-                        else
-                                fprintf(fd, "%s\n", buf);
+                        if (n_status_lines) {
+                            fprintf(fd, "\t%s\n", buf);
+                        } else {
+                            fprintf(fd, "%s\n", buf);
+                        }
                         n_status_lines++;
                         p = buf;
                         len = sizeof(buf);
@@ -218,21 +219,23 @@ static int print_frontend_stats(FILE *fd,
         fflush(fd);
         return 0;
 }
-static void get_show_stats(struct dvb_v5_fe_parms *parms)
-{
+
+static void get_show_stats(struct dvb_v5_fe_parms *parms) {
         int rc;
         signal(SIGTERM, do_timeout);
         signal(SIGINT, do_timeout);
         do {
                 rc = dvb_fe_get_stats(parms);
-                if (!rc)
-                        print_frontend_stats(stderr, parms);
-                if (!timeout_flag)
-                        usleep(1000000);
+                if (!rc) {
+                    print_frontend_stats(stderr, parms);
+                }
+                if (!timeout_flag) {
+                    usleep(1000000);
+                }
         } while (!timeout_flag);
 }
-int main(int argc, char *argv[])
-{
+
+int main(int argc, char *argv[]) {
         struct dvb_device *dvb;
         struct dvb_dev_list *dvb_dev;
         struct dvb_v5_fe_parms *parms;
@@ -250,22 +253,26 @@ int main(int argc, char *argv[])
          * If called without any option, be verbose, to print the
          * DVB frontend information.
          */
-        if (!get && !delsys && !set_params && !femon)
-                verbose++;
-        if (!delsys && !set_params)
-                fe_flags = O_RDONLY;
+        if (!get && !delsys && !set_params && !femon) {
+            verbose++;
+        }
+        if (!delsys && !set_params) {
+            fe_flags = O_RDONLY;
+        }
         dvb = dvb_dev_alloc();
-        if (!dvb)
-                return -1;
+        if (!dvb) {
+            return -1;
+        }
         dvb_dev_set_log(dvb, verbose, NULL);
         dvb_dev_find(dvb, NULL, NULL);
         parms = dvb->fe_parms;
-        dvb_dev = dvb_dev_seek_by_adapter(dvb, adapter, frontend,
-                                          DVB_DEVICE_FRONTEND);
-        if (!dvb_dev)
+        dvb_dev = dvb_dev_seek_by_adapter(dvb, adapter, frontend, DVB_DEVICE_FRONTEND);
+        if (!dvb_dev) {
+            return -1;
+        }
+        if (!dvb_dev_open(dvb, dvb_dev->sysname, fe_flags)) {
                 return -1;
-        if (!dvb_dev_open(dvb, dvb_dev->sysname, fe_flags))
-                return -1;
+        }
         if (delsys) {
                 printf(_("Changing delivery system to: %s\n"),
                         delivery_system_name[delsys]);
@@ -273,15 +280,17 @@ int main(int argc, char *argv[])
                 goto ret;
         }
 #if 0
-        if (set_params)
+        if (set_params) {
                 do_something();
+        }
 #endif
         if (get) {
                 dvb_fe_get_parms(parms);
                 dvb_fe_prt_parms(parms);
         }
-        if (femon)
+        if (femon) {
                 get_show_stats(parms);
+        }
 ret:
         dvb_dev_free(dvb);
         return 0;

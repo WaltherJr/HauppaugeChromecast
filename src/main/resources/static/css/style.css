@@ -1,6 +1,8 @@
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 body {
@@ -24,12 +26,21 @@ ul {
   list-style-type: none;
 }
 
+pre {
+  font-size: 13px;
+  background-color: gray;
+  margin: 0;
+}
+
 button, input[type=submit] {
   padding: 10px 18px;
-  border-radius: 7px;
-  background-color: rgb(200.1086956522, 197.1811594203, 158.3913043478);
-  border: none;
+  background-color: darkslategray;
   color: rgba(255, 255, 255, 0.7);
+  border-radius: 7px;
+  border: none;
+}
+button:hover, button .state-pressed, input[type=submit]:hover, input[type=submit] .state-pressed {
+  background-color: rgb(69.8285714286, 117.3714285714, 117.3714285714);
 }
 
 input[type=url], input[type=text] {
@@ -37,10 +48,18 @@ input[type=url], input[type=text] {
   border-radius: 7px;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.invisible {
+  visibility: hidden !important;
+}
+
 .flex-parent {
   display: flex;
-  align-items: flex-start; /* optional */
-  gap: 1rem; /* optional */
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .grid {
@@ -48,35 +67,20 @@ input[type=url], input[type=text] {
   grid-auto-rows: 50px;
 }
 
-.tabs > .tab-headings {
-  background: gray;
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
-  overflow: hidden;
+button.two-states.state-pressed > span:first-child {
+  display: none;
 }
-.tabs > .tab-headings > li {
-  display: inline-block;
+button.two-states:not(.state-pressed) > span:last-child {
+  display: none;
 }
-.tabs > .tab-headings > li.active-tab {
-  background-color: rgba(0, 0, 0, 0.4);
+
+ul.tab-headings li {
+  padding: 10px 18px;
+  background-color: darkslategray;
+  color: rgba(255, 255, 255, 0.7);
 }
-.tabs > .tab-content-wrapper > li {
-  position: absolute;
-  overflow-y: scroll;
-  left: 0;
-  top: 0;
-  background-color: gainsboro;
-}
-.tabs > .tab-content-wrapper > li.active-tab {
-  z-index: 1;
-}
-.tabs .tab-content {
-  position: relative;
-}
-.tabs .tab-content h4 {
-  margin: 0;
-  background-color: goldenrod;
-  grid-column: 1/span 4;
+ul.tab-headings li a {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .fade-in {
@@ -94,9 +98,21 @@ input[type=url], input[type=text] {
   animation: fadeOut 2s ease-out forwards;
 }
 
+.item-enter-anim {
+  animation: itemEnterAnim attr(data-anim-duration s) ease-out forwards;
+}
+
 @keyframes fadeOut {
   to {
     opacity: 0;
+  }
+}
+@keyframes itemEnterAnim {
+  from {
+    margin-top: -50px;
+  }
+  to {
+    margin-top: 0;
   }
 }
 ul#main-channel-list div.inspected-channel-programme-info {
@@ -118,8 +134,20 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 #main-left-panel {
   position: relative;
 }
+#main-left-panel #main-left-panel-resize-bar {
+  background-color: red;
+  width: 10px;
+  height: 100%;
+  cursor: w-resize;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 #main-left-panel #tab-tv-channels {
   position: relative;
+}
+#main-left-panel #tab-tv-channels .tab-content {
+  height: 85vh;
 }
 #main-left-panel #tab-tv-channels #inspected-programme-image-container {
   position: fixed;
@@ -138,8 +166,11 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 #main-left-panel ul#main-channel-list {
   margin: 0;
   padding: 0;
+  height: 100%;
+  overflow-y: scroll;
   overflow-x: hidden;
   position: relative;
+  transition: margin-top 0.5s ease;
 }
 #main-left-panel ul#main-channel-list > li {
   display: block;
@@ -155,7 +186,7 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 }
 #main-left-panel ul#main-channel-list > li > .flex-parent {
   max-height: 0;
-  transition: max-height 1s ease;
+  transition: max-height 1s ease 0.5s;
   overflow: auto;
   position: relative;
   z-index: 1;
@@ -186,7 +217,6 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   padding: 12px 24px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), inset 0 0 1px 2px rgba(0, 0, 0, 0.2);
   font-size: 17px;
-  margin-right: -20px;
 }
 #main-left-panel ul#main-channel-list ul.channel-programmes-day-list > h4:first-child {
   margin-top: 0;
@@ -205,7 +235,10 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0 0;
-  padding: 20px 30px 20px 20px;
+  max-width: 40%;
+}
+#main-left-panel ul#main-channel-list div.channel-programmes-list-container > ul > li > a {
+  padding: 3px 20px;
 }
 #main-left-panel ul#main-channel-list p.currently-inspected-programme-description {
   background-color: rgba(0, 0, 0, 0.5);
@@ -224,7 +257,6 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 }
 #main-left-panel ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details a {
   display: block;
-  white-space: nowrap;
   color: rgba(255, 255, 255, 0.7);
 }
 #main-left-panel ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details.channel-current-programme > a {
@@ -233,6 +265,7 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 #main-left-panel ul#main-channel-list ul.channel-programmes-day-list li.channel-programme-details.currently-inspected-programme > a {
   color: white;
   font-weight: bold;
+  transition: color 0.4s ease;
 }
 #main-left-panel ul#main-channel-list ul.channel-programmes-day-list .channel-programme-start-time {
   display: inline-block;
@@ -312,37 +345,217 @@ ul#main-channel-list div.inspected-channel-programme-info::before {
 #tab-developer .grid {
   grid-template-columns: auto auto auto auto;
 }
+#tab-developer .dvb-device-name:empty + .device-icon {
+  display: none;
+}
+
+@keyframes borderPulse {
+  from {
+    border-color: red;
+  }
+  to {
+    border-color: blue;
+  }
+}
+.inspected-bounding-box {
+  position: fixed;
+  z-index: 998;
+  background-color: maroon;
+  border: 3px solid red;
+  animation: borderPulse 3s infinite alternate;
+  opacity: 0.5;
+  box-sizing: border-box;
+}
 
 #developer-mode-console {
+  font-size: 12px;
   position: fixed;
-  background-color: burlywood;
+  background-color: darkgoldenrod;
   box-shadow: inset 0 5px rgba(0, 0, 0, 0.5), 0 -7px 10px rgba(0, 0, 0, 0.6);
   z-index: 999;
   bottom: 0;
   left: 0;
   width: 100vw;
   box-sizing: border-box;
-  opacity: 0.7;
+  transition: bottom 0.5s ease;
+  resize: vertical;
+  overflow-y: auto;
+}
+#developer-mode-console #developer-console-groups-and-messages-count {
+  padding: 10px 18px;
+  background-color: darkslategray;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 7px;
+  font-size: 16px;
+}
+#developer-mode-console #developer-console-groups-and-messages-count > span {
+  padding: 10px 18px;
+  background-color: darkslategray;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 7px;
+}
+#developer-mode-console #developer-console-groups-and-messages-count > span:first-child {
+  counter-reset: x var(--dc-groups-count);
+}
+#developer-mode-console #developer-console-groups-and-messages-count > span:first-child::after {
+  content: counter(x);
+}
+#developer-mode-console #developer-console-groups-and-messages-count > span:last-child {
+  counter-reset: y var(--dc-messages-count);
+}
+#developer-mode-console #developer-console-groups-and-messages-count > span:last-child::after {
+  content: counter(y);
+}
+#developer-mode-console #developer-console-resize-bar {
+  padding: 20px;
+  cursor: n-resize;
+  display: flex;
+  flex-direction: row-reverse;
+}
+#developer-mode-console #developer-console-resize-bar #developer-console-mouse-coords-panel {
+  display: flex;
+  padding: 10px 18px;
+  background-color: darkslategray;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 7px;
+}
+#developer-mode-console #developer-console-resize-bar #developer-console-mouse-coords-panel > button#toggle-developer-console-mouse-coords {
+  flex: 2;
+}
+#developer-mode-console #developer-console-resize-bar #developer-console-mouse-coords-panel > div#developer-console-mouse-coords {
+  flex: 3;
+  width: 100px;
+  transition: width 0.4s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#developer-mode-console #developer-console-resize-bar #developer-console-mouse-coords-panel > div#developer-console-mouse-coords > span {
+  display: block;
+}
+#developer-mode-console .developer-mode-called-function {
+  position: relative;
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+#developer-mode-console .developer-mode-called-function .tooltip-text {
+  padding: 34px 0 0 0 !important;
+}
+#developer-mode-console .developer-mode-called-function ul.element-data-attributes {
+  display: inline-flex;
+  gap: 10px;
+  position: relative;
+  margin-left: 10px;
+}
+#developer-mode-console .developer-mode-called-function ul.element-data-attributes:not(:empty) {
+  padding-bottom: 20px;
+}
+#developer-mode-console .developer-mode-called-function ul.element-data-attributes > li {
+  background-color: salmon;
+  padding: 5px 10px;
+  position: relative;
+}
+#developer-mode-console .developer-mode-called-function ul.element-data-attributes > li::before {
+  content: "data";
+  display: block;
+  position: absolute;
+  padding: 4px 7px;
+  right: 0;
+  top: 100%;
+  background-color: firebrick;
+}
+#developer-mode-console .developer-mode-called-function pre {
+  padding: 15px;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+#developer-mode-console .developer-mode-called-function-name {
+  background-color: darkgoldenrod;
+  border-radius: 7px;
+  padding: 7px 12px;
+  display: inline-block;
+  transition: background-color 0.1s ease;
+}
+#developer-mode-console .developer-mode-called-function-name:hover, #developer-mode-console .developer-mode-called-function-name.state-pressed {
+  background-color: rgb(240.6830769231, 175.6061538462, 15.5169230769);
+}
+#developer-mode-console .developer-mode-called-function-params {
+  display: flex;
+  background-color: gold;
+  padding: 12px;
+}
+#developer-mode-console .developer-mode-called-function-params > li::before {
+  content: attr(data-parameter-name);
+}
+
+ul#developer-mode-console-actions {
+  display: flex;
+  gap: 10px;
+}
+ul#developer-mode-console-actions .material-symbols-sharp {
+  font-size: 32px;
+}
+ul#developer-mode-console-actions button {
+  padding: 5px 10px;
 }
 
 #developer-mode-messages {
-  height: 250px;
+  height: 500px;
   overflow-y: scroll;
+  transition: max-height attr(data-anim-duration s) ease;
+  counter-reset: rev attr(data-groups-count number);
 }
-#developer-mode-messages li {
+#developer-mode-messages > ul.developer-mode-message-group > li {
+  display: flex;
+  align-items: center;
+  background-image: linear-gradient(to bottom, rgb(240, 240, 240), rgb(220, 220, 220));
+  box-shadow: inset 0 0 2px gray;
+}
+#developer-mode-messages > ul.developer-mode-message-group > li.message-separator {
+  height: 10px;
+  background-color: palegoldenrod;
+  background-image: none;
+  counter-increment: rev -1;
+}
+#developer-mode-messages > ul.developer-mode-message-group > li.message-separator::before {
   display: block;
+  width: 100%;
+  padding: 7px 12px;
+  background-color: limegreen;
+  content: counter(rev);
 }
-#developer-mode-messages li > span {
+#developer-mode-messages > ul.developer-mode-message-group > li > span {
   display: block;
   padding: 10px 20px;
 }
-#developer-mode-messages li > span:first-child {
-  float: left;
+#developer-mode-messages > ul.developer-mode-message-group > li > span.developer-mode-message-time {
+  color: rgba(255, 255, 255, 0.8);
   background-color: rgba(0, 0, 0, 0.4);
 }
-
-body:not(.developer-mode) #developer-mode-console {
-  display: none;
+#developer-mode-messages ul.called-function-parameter-list {
+  display: inline-flex;
+  gap: 10px;
+}
+#developer-mode-messages ul.called-function-parameter-list > li {
+  color: rgba(255, 255, 255, 0.7);
+  background-color: darkslategray;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 7px;
+  overflow: hidden;
+}
+#developer-mode-messages ul.called-function-parameter-list > li[data-parameter-type]::before {
+  content: attr(data-parameter-type);
+  font-size: 90%;
+  width: calc(100% + 20px);
+  margin-top: -5px;
+  margin-left: -10px;
+  background-color: rgba(255, 255, 255, 0.3);
+  display: block;
+  font-weight: bold;
+  text-align: center;
 }
 
 body.developer-mode #developer-mode-console {
@@ -353,6 +566,101 @@ body.developer-mode #inspected-programme-image-container {
 }
 body.developer-mode #inspected-programme-image-container img:first-child {
   opacity: 0.6;
+}
+
+.tabs > .tab-headings {
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  overflow: hidden;
+}
+.tabs > .tab-headings > li {
+  display: inline-block;
+  position: relative;
+}
+.tabs > .tab-headings > li.active-tab::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.tabs > .tab-content-wrapper > li {
+  position: absolute;
+  overflow-y: scroll;
+  left: 0;
+  top: 0;
+  background-color: gainsboro;
+}
+.tabs > .tab-content-wrapper > li.active-tab {
+  z-index: 1;
+}
+.tabs .tab-content {
+  position: relative;
+}
+.tabs .tab-content h4 {
+  margin: 0;
+  background-color: goldenrod;
+  grid-column: 1/span 4;
+}
+
+.tooltip.is-visible .tooltip-text {
+  display: block !important;
+}
+.tooltip.has-been-dragged .tooltip-text::after {
+  display: none;
+}
+.tooltip .tooltip-trigger.drop-target-hovered {
+  outline: 4px solid rgb(69.8285714286, 117.3714285714, 117.3714285714);
+}
+.tooltip.has-close-button .tooltip-text {
+  background-image: radial-gradient(circle at 30% 70%, gainsboro, lightgray);
+  background-position: top left;
+  background-size: 100% 36px;
+  background-repeat: no-repeat;
+  padding-top: 56px;
+}
+.tooltip .tooltip-actions {
+  position: absolute;
+  display: flex;
+  top: 0;
+  right: 0;
+  height: 36px;
+  background-color: transparent;
+  color: gray;
+  box-sizing: border-box;
+}
+.tooltip .tooltip-actions button {
+  background-color: transparent;
+}
+.tooltip.no-close-button .tooltip-close-btn {
+  display: none;
+}
+.tooltip .tooltip-text {
+  position: fixed !important;
+  z-index: 999;
+  display: none;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+  border-radius: 7px;
+  padding: 20px;
+  background-color: white;
+  transition: left 0.2s ease, bottom 0.2s ease;
+}
+.tooltip .tooltip-text::after {
+  font-family: "Material Symbols Rounded", serif;
+  font-size: 72px;
+  content: "\e5c5";
+  pointer-events: none;
+  display: block;
+  position: absolute;
+  left: attr(data-arrow-left-pos px);
+  top: calc(100% - 6px);
+  width: 50px;
+  height: 20px;
+  line-height: 20px;
+  color: white;
 }
 
 .fixed {

@@ -1,0 +1,76 @@
+
+@use '../mixins';
+@use '../constants';
+
+$tooltip-background-color: white;
+$tooltip-padding: 20px;
+$tooltip-top-panel-height: 36px;
+
+.tooltip {
+  &.is-visible .tooltip-text {
+    display: block !important;
+  }
+
+  &.has-been-dragged {
+    .tooltip-text::after {
+      display: none;
+    }
+  }
+
+  .tooltip-trigger {
+    &.drop-target-hovered {
+      outline: 4px solid constants.$lighter-slate-gray;
+    }
+  }
+
+  &.has-close-button .tooltip-text {
+    background-image: radial-gradient(circle at 30% 70%, gainsboro, lightgray);
+    background-position: top left;
+    background-size: 100% $tooltip-top-panel-height;
+    background-repeat: no-repeat;
+    padding-top: $tooltip-padding + $tooltip-top-panel-height;
+  }
+
+  .tooltip-actions {
+    position: absolute;
+    display: flex;
+    top: 0;
+    right: 0;
+    height: $tooltip-top-panel-height;
+    background-color: transparent;
+    color: gray;
+    box-sizing: border-box;
+
+    button {
+      background-color: transparent;
+    }
+  }
+
+  &.no-close-button {
+    .tooltip-close-btn {
+      display: none;
+    }
+  }
+
+  .tooltip-text {
+    position: fixed !important;
+    z-index: 999;
+    display: none;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.6));
+    border-radius: 7px;
+    padding: $tooltip-padding;
+    background-color: $tooltip-background-color;
+    transition: left .2s ease, bottom .2s ease;
+
+    &::after {
+      @include mixins.material-symbol('\e5c5', 72px);
+      position: absolute;
+      left: attr(data-arrow-left-pos px);
+      top: calc(100% - 6px);
+      width: 50px;
+      height: 20px;
+      line-height: 20px;
+      color: $tooltip-background-color;
+    }
+  }
+}

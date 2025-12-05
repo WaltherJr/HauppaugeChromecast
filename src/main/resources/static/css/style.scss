@@ -1,14 +1,14 @@
 
 @use 'sass:color';
 @use 'base';
+@use 'constants';
+@use 'mixins';
 @use 'animation';
 @use 'fragments';
-@use 'developer-mode';
+@use 'developer-console';
+@use 'ui/tabs';
+@use 'ui/tooltip';
 @use 'pages/tab_tv_channels/player-bottom-panel';
-
-$main-left-panel-width: 50vw;
-$main-container-height: 85vh;
-$main-menu-height: 50px;
 
 .fixed {
   position: fixed;
@@ -23,21 +23,21 @@ $main-menu-height: 50px;
 
 .app-panel {
     background-color: #f4f4f4;
-    border: 5px solid base.$color3;
+    border: 5px solid constants.$color3;
     margin: 10px; /* Adds spacing between columns */
     border-radius: 8px;
 }
 
 #main-left-panel {
-    background-color: base.$color2;
+    background-color: constants.$color2;
     // flex: 3;
-    width: $main-left-panel-width;
-    height: $main-container-height;
-    @include base.resizable('x');
+    width: constants.$main-left-panel-width;
+    height: constants.$main-container-height;
+    @include mixins.resizable('x');
 
     .tab-headings {
-      height: $main-menu-height;
-      line-height: $main-menu-height;
+      height: constants.$main-menu-height;
+      line-height: constants.$main-menu-height;
       position: absolute;
       z-index: 3;
       left: 0;
@@ -56,12 +56,12 @@ $main-menu-height: 50px;
 
     & > .tabs > .tab-content-wrapper > li {
       width: 100%;
-      height: calc(#{$main-container-height} - #{$main-menu-height});
+      height: calc(#{constants.$main-container-height} - #{constants.$main-menu-height});
     }
 }
 
 #main-right-panel {
-    background-color: base.$color2;
+    background-color: constants.$color2;
     flex: 5;
 }
 

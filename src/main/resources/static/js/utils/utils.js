@@ -1,26 +1,40 @@
+import * as handlebars from './handlebars.js';
+import * as developer_console from "../pages/developer_console/developer_console.js";
+import * as ui from '../ui/ui.js'
 
-const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
+let updateMouseCoordsTimer;
+let insertedTooltipCount = 0;
 
-function callAppFunction(functionName, developerModeMessage) {
-    eval(functionName + '();');
-    const timestamp = new Date().toLocaleString();
-    $('#developer-mode-messages').prepend(`<li><span class="developer-mode-message-time">${timestamp}</span><span class="developer-mode-message">${developerModeMessage}</span></li>`);
+const responseHandlerMappings = {
+    'application/json': 'json',
+    'text/plain': 'text'
 }
 
-function setActiveTab(event) {
-    event.preventDefault();
-    setActiveTabContent($(this).closest('li'), $(this).attr('href'));
+function handleFetchError(error) {
+    console.error('There was a problem with the fetch operation!!!', error);
 }
 
-function setActiveTabContent(contentTabOrTabHeading, hash) {
-    const tabIndex = $(contentTabOrTabHeading).index() + 1;
-    const tabsContainer = $(contentTabOrTabHeading).closest('.tabs');
-    const items = tabsContainer.find(`.tab-headings > li:nth-child(${tabIndex}), .tab-content-wrapper > li:nth-child(${tabIndex})`);
-    items.addClass('active-tab').siblings().removeClass('active-tab');
-    window.location.hash = hash;
+function createFetchRequestParams(httpMethod, contentType, body) {
+    let requestParameters = {method: httpMethod, headers: {'Content-Type': contentType}};
+    if (body) {
+        requestParameters.body = JSON.stringify(body);
+    }
+
+    return requestParameters;
 }
 
-function updatePageQueryParameter(parameterName, parameterValue) {
+async function fetchRequest(url, parameters) {
+    return fetch(url, parameters).then(response => {
+         if (!response.ok) {
+             throw new Error('Network response was not ok');
+         }
+         const responseHandler = responseHandlerMappings[parameters.headers['Content-Type']];
+         return response[responseHandler]();
+
+    }).catch(error => handleFetchError)
+}
+
+export function updatePageQueryParameter(parameterName, parameterValue) {
     let url = new URL(window.location);
     let params = new URLSearchParams(url.search);
 
@@ -29,58 +43,105 @@ function updatePageQueryParameter(parameterName, parameterValue) {
     window.history.pushState({}, '', url); // Update the browser's URL without reloading the page
 }
 
-function reloadPageSearchParams(callback) {
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function reloadPageSearchParams(callback) {
     const url = new URL(window.location);
     callback(url.searchParams);
     window.location = url.toString();
 }
 
-function cssFloatToInteger(cssFloatString) {
+export function cssFloatToInteger(cssFloatString) {
     return parseFloat(cssFloatString) * 1000;
 }
 
-function getText(url) {
-    return fetch(url).then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.text();
-    }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
+export async function getText(url) {
+    return fetchRequest(url, createFetchRequestParams('GET', 'text/plain'));
 }
 
-function getJSON(url) {
-    return fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        }).catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
+export async function getJson(url) {
+    return fetchRequest(url, createFetchRequestParams('GET', 'application/json'));
 }
 
-function putJSON(url, body) {
-    return fetch(url, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: body
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    }).catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
+export async function putJson(url, body) {
+    return fetchRequest(url, createFetchRequestParams('PUT', 'application/json', body));
 }
 
-function getFormattedDate(dateDelta) {
+export async function patchJson(url, body) {
+    return fetchRequest(url, createFetchRequestParams('PATCH', 'application/json', body));
+}
+
+export function getFormattedDate(dateDelta) {
     const date = new Date();
     date.setDate(new Date().getDate() + dateDelta);
     return date.toISOString().split('T')[0];
 }
+
+export function createInspectionBoundingBox(element) {
+    const boundingBox = $(document.createElement('div')).addClass('inspected-bounding-box');
+    boundingBox.css({left: element.offset().left, top: element.offset().top, width: element.outerWidth(), height: element.outerHeight()});
+    $('body').append(boundingBox);
+}
+
+export function handleCalledFunctionParameterMouseOut() {
+    $('.developer-mode-inspected').removeClass('developer-mode-inspected');
+    $('.inspected-bounding-box').remove();
+}
+
+export function handleDocumentMouseMove(event) {
+    clearTimeout(updateMouseCoordsTimer);
+    updateMouseCoordsTimer = setTimeout(() => {
+        developer_console.updateMouseCoordinates(event.clientX, event.clientY);
+    }, 300);
+}
+
+async function generateFunctionDefinition(functionDefinition) {
+    const functionDefPretty = await prettier.format(functionDefinition, {
+        parser: "babel",
+        semi: true,
+        tabWidth: 3,
+        singleQuote: true,
+        plugins: prettierPlugins,
+    });
+
+    return {
+        functionDefPretty: functionDefPretty,
+        functionDefPrettyAndHighlighted: hljs.highlight(
+            functionDefPretty, {
+                language: 'javascript',
+                theme: 'arduino-light-min'
+            }
+        ).value
+    }
+}
+
+export function createTransparentImage() {
+    const img = new Image();
+    img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Uu36PUAAAAASUVORK5CYII=";
+    return img;
+}
+
+export function proxifyFunctionDeveloperMode(functionToOverride) {
+    return new Proxy(functionToOverride, {
+        async apply(target, thisArg, argumentsList) {
+            const timestamp = new Date().toLocaleString();
+            const functionDefinition = target.toString();
+            const functionDefFormatted = await generateFunctionDefinition(functionDefinition);
+
+            insertedTooltipCount++;
+            const developerModeMessage = await handlebars.renderHandlebarsTemplate('/js/templates/developer-mode-message.hbs',
+                {functionName: target.name, functionDefinition: functionDefinition, functionDefFormatted: functionDefFormatted, parameters: argumentsList, tooltipZIndex: insertedTooltipCount});
+
+            developer_console.queueDeveloperModeMessageInsertion(`<li class="item-enter-anim" data-anim-duration="${developer_console.insertDeveloperMessageAnimationDuration}"><span class="developer-mode-message-time">${timestamp}</span>${developerModeMessage}</li>`);
+
+
+            console.log('INDEX2: ' + insertedTooltipCount);
+            return target(...argumentsList);
+        }
+    })
+}
+
+reloadPageSearchParams = proxifyFunctionDeveloperMode(reloadPageSearchParams);
+updatePageQueryParameter = proxifyFunctionDeveloperMode(updatePageQueryParameter);

@@ -1,0 +1,255 @@
+
+@use 'base';
+@use 'constants';
+@use 'mixins';
+@use 'sass:color';
+
+.developer-mode-inspected {
+}
+
+@keyframes borderPulse {
+  from { border-color: red; }
+  to { border-color: blue; }
+}
+
+.inspected-bounding-box {
+  position: fixed;
+  z-index: 998;
+  background-color: maroon;
+  border: 3px solid red;
+  animation: borderPulse 3s infinite alternate;
+  opacity: .5;
+  box-sizing: border-box;
+}
+
+#developer-mode-console {
+  font-size: 12px;
+  position: fixed;
+  background-color: constants.$golden-rod;
+  box-shadow: inset 0 5px rgba(0,0,0,.5), 0 -7px 10px rgba(0,0,0,.6);
+  z-index: 999;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  box-sizing: border-box;
+  transition: bottom .5s ease;
+  resize: vertical;
+  overflow-y: auto;
+
+  #developer-console-groups-and-messages-count {
+    @include mixins.base-button-style(constants.$slate-gray);
+    font-size: 16px;
+
+    & > span {
+      @include mixins.base-button-style(constants.$slate-gray);
+
+      &:first-child {
+        counter-reset: x var(--dc-groups-count);
+        &::after {
+          content: counter(x);
+        }
+      }
+
+      &:last-child {
+        counter-reset: y var(--dc-messages-count);
+        &::after {
+          content: counter(y);
+        }
+      }
+    }
+  }
+
+  #developer-console-resize-bar {
+    padding: 20px;
+    cursor: n-resize;
+    display: flex;
+    flex-direction: row-reverse;
+
+    #developer-console-mouse-coords-panel {
+      display: flex;
+      @include mixins.base-button-style(constants.$slate-gray);
+
+      & > button#toggle-developer-console-mouse-coords {
+        flex: 2;
+      }
+
+      & > div#developer-console-mouse-coords {
+        flex: 3;
+        width: 100px;
+        transition: width .4s ease;
+        overflow: hidden;
+        white-space: nowrap;
+
+        & > span {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .developer-mode-called-function {
+    position: relative;
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .tooltip-text {
+        padding: 34px 0 0 0 !important;
+    }
+
+    ul.element-data-attributes {
+        display: inline-flex;
+        gap: 10px;
+        position: relative;
+        margin-left: 10px;
+
+        &:not(:empty) {
+            padding-bottom: 20px;
+        }
+
+        & > li {
+            background-color: salmon;
+            padding: 5px 10px;
+            position: relative;
+
+            &::before {
+                content: 'data';
+                display: block;
+                position: absolute;
+                padding: 4px 7px;
+                right: 0;
+                top: 100%;
+                background-color: firebrick;
+            }
+        }
+    }
+
+    pre {
+        padding: 15px;
+        border-bottom-left-radius: inherit;
+        border-bottom-right-radius: inherit;
+    }
+  }
+
+  .developer-mode-called-function-name {
+    background-color: constants.$golden-rod;
+    border-radius: 7px;
+    padding: 7px 12px;
+    display: inline-block;
+    transition: background-color .1s ease;
+
+    &:hover, &.state-pressed {
+      background-color: constants.$lighter-golden-rod;
+    }
+  }
+
+  .developer-mode-called-function-params {
+    display: flex;
+    background-color: gold;
+    padding: 12px;
+
+    & > li::before {
+      content: attr(data-parameter-name);
+    }
+  }
+}
+
+ul#developer-mode-console-actions {
+  display: flex;
+  gap: 10px;
+
+  .material-symbols-sharp {
+    font-size: 32px;
+  }
+
+  button {
+    padding: 5px 10px;
+  }
+}
+
+#developer-mode-messages {
+  height: 500px;
+  overflow-y: scroll;
+  transition: max-height attr(data-anim-duration s) ease;
+  counter-reset: rev attr(data-groups-count number); // counter-reset: rev var(--count);
+
+  & > ul.developer-mode-message-group > li {
+    display: flex;
+    align-items: center;
+    background-image: linear-gradient(to bottom, rgb(240,240,240), rgb(220,220,220));
+    box-shadow: inset 0 0 2px gray;
+
+    &.message-separator {
+      height: 10px;
+      background-color: palegoldenrod;
+      background-image: none;
+      counter-increment: rev -1;
+
+      &::before {
+        display: block;
+        width: 100%;
+        padding: 7px 12px;
+        background-color: limegreen;
+        content: counter(rev);
+      }
+    }
+
+    & > span {
+      display: block;
+      padding: 10px 20px;
+
+      &.developer-mode-message-time {
+        color: rgba(255,255,255,.8);
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+
+  ul.called-function-parameter-list {
+    display: inline-flex;
+    gap: 10px;
+
+    & > li {
+      color: rgba(255,255,255,.7);
+      background-color: constants.$slate-gray;
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 7px;
+      overflow: hidden;
+
+      &[data-parameter-type]::before {
+        content: attr(data-parameter-type);
+        font-size: 90%;
+        width: calc(100% + 2*10px);
+        margin-top: -5px;
+        margin-left: -10px;
+        background-color: rgba(255,255,255,.3);
+        display: block;
+        font-weight: bold;
+        text-align: center;
+      }
+    }
+  }
+}
+
+body:not(.developer-mode) {
+  #developer-mode-console {
+    // display: none;
+  }
+}
+
+body.developer-mode {
+  #developer-mode-console {
+    display: block;
+  }
+
+  #inspected-programme-image-container {
+    overflow: initial;
+
+    img:first-child {
+      opacity: .6;
+    }
+  }
+}

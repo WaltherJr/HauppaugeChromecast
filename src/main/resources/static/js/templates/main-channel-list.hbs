@@ -1,7 +1,7 @@
 <ul id="main-channel-list">
     {{#each channels as |channel channelIndex|}}
     <li data-channel-name="{{prettyChannelName channel.name}}" data-channel-key="{{channel.id}}">
-        <h3>
+        <h3 class="channel-banner">
             <img class="channel-icon" src="{{ channel.icon }}" alt="{{ getApplicationConfig 'channel_image_alt_text' }}">
         </h3>
         <div class="flex-parent">
@@ -16,3 +16,5 @@
     </li>
     {{/each}}
 </ul>
+<div id="main-left-panel-resize-bar" class="resize-bar no-drag-image" draggable="true" data-resize-target="#main-left-panel" data-resize-target-prop="width"></div>
+<!-- <div id="developer-console-resize-bar" class="resize-bar no-drag-image has-been-dragged" draggable="true" data-resize-target="#developer-mode-messages" data-resize-target-prop="height">-->

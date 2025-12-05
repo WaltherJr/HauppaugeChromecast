@@ -1,32 +1,30 @@
+import * as utils from '../utils/utils.js';
+import * as tv_channels_list from './tab_tv_channels/tv_channels_list.js';
 
 const lastScrolledHandlerTimeout = parseInt(document.app_config['last_scrolled_handler_timeout']);
+let mainChannelList;
 
-function changeInspectedChannelListItem() {
-    const listItem = $(this);
-    const selectedChannelName = listItem.attr('data-channel-name');
-    const isProgrammeDetailsChild = $(event.target).closest('li.channel-programme-details').length !== 0;
-    const otherChannelListItemOpen = listItem.siblings('li.programme-list-open').get(0);
-    if (otherChannelListItemOpen) {
-        clearInspectedProgrammeImages(); // Reset inspected programme image
-    }
+function setInspectedChannel(listItem) {
+    let newHeight = $('#tab-tv-channels').height();
+    newHeight -= listItem.find('.channel-banner').outerHeight() - 50;
+    const listPosition = listItem.position();
 
-    listItem.siblings('li.programme-list-open').removeClass('programme-list-open').find('.flex-parent').css('max-height', '0');
+debugger;
 
-    updatePageQueryParameter('selectedChannel', selectedChannelName);
-    localStorage.setItem('lastSelectedChannel', selectedChannelName);
+    $('#main-channel-list').animate({scrollTop: listPosition.top}, 700, function() {
+        listItem.addClass('currently-inspected-channel').find('.flex-parent').css('max-height', `${Math.round(newHeight)}px`);
+    });
+}
 
-    if (!isProgrammeDetailsChild) {
-        // Only toggle list if not clicking on a programme information link
-        const newHeight = computeMaxHeightOfChannelListItem(listItem);
-        const flexParent = listItem.find('.flex-parent');
+async function closeInspectedChannel(listItem) {
+    listItem.removeClass('currently-inspected-channel').find('.flex-parent').css('max-height', '');
+    utils.sleep(1000);
+}
 
-        const channelDisplayAnimationDelay = cssFloatToInteger(document.app_config.channel_item_display_animation.duration);
-
-        setTimeout(function () {
-            scrollToChannelListItem($('#tab-tv-channels'), listItem, {listContainer: flexParent, listItemHeight: newHeight});
-
-        }, channelDisplayAnimationDelay);
-    }
+export async function changeInspectedChannelListItem(listItem) {
+    await closeInspectedChannel(listItem.siblings('.currently-inspected-channel'));
+    setInspectedChannel(listItem);
+    // TODO: different animation durations!
 }
 
 function updateProgrammeDescriptionScrollPosition() {
@@ -36,7 +34,7 @@ function updateProgrammeDescriptionScrollPosition() {
     });
 }
 
-function scrollToChannelListItem(scrollableContainer, listItem, openListItem) {
+export function scrollToChannelListItem(scrollableContainer, listItem, openListItem) {
     if (listItem.length !== 0) {
         const topRelativeToChannelList = listItem.position().top + scrollableContainer.scrollTop();
 
@@ -51,7 +49,7 @@ function scrollToChannelListItem(scrollableContainer, listItem, openListItem) {
     }
 }
 
-function setCurrentChannelProgrammesListPosition(mainChannelList) {
+export function setCurrentChannelProgrammesListPosition(mainChannelList) {
     const currentChannelProgrammes = mainChannelList.find('ul.channel-programmes-day-list:first-child > li.channel-programme-details').toArray();
 
     currentChannelProgrammes.forEach(programme => {
@@ -64,14 +62,14 @@ function setCurrentChannelProgrammesListPosition(mainChannelList) {
     });
 }
 
-function setResizeObservers(resizeObserversDefs) {
+export function setResizeObservers(resizeObserversDefs) {
     resizeObserversDefs.forEach(resizeObserverDef => {
         const observer = new ResizeObserver(entries => resizeObserverDef.callback(entries[0]));
         observer.observe($(resizeObserverDef.selector).get(0));
     })
 }
 
-async function setIntersectionObservers() {
+export async function setIntersectionObservers() {
     /*
     const nav = $('#main-left-panel > h2').get();
     const sentinel = $('li[data-channel-name]').get(6);
@@ -102,11 +100,45 @@ async function setIntersectionObservers() {
     */
 }
 
-setInterval(function() {
-    const lastScrolledThreshold = parseInt(document.app_config['last_scrolled_threshold']);
+$(document).ready(function() {
+    setInterval(function() {
+        const lastScrolledThreshold = parseInt(document.app_config['last_scrolled_threshold']);
 
-    if (document.lastScrolled && new Date() - document.lastScrolled > lastScrolledThreshold) {
-        updateProgrammeDescriptionScrollPosition();
-        document.lastScrolled = undefined;
-    }
-}, lastScrolledHandlerTimeout);
+        if (document.lastScrolled && new Date() - document.lastScrolled > lastScrolledThreshold) {
+            updateProgrammeDescriptionScrollPosition();
+            document.lastScrolled = undefined;
+        }
+    }, lastScrolledHandlerTimeout);
+
+    mainChannelList = $('#main-channel-list');
+
+    $('body').on('click', 'ul#main-channel-list > li .channel-banner', function() {
+        const listItem = $(this).closest('li');
+
+        if (!listItem.hasClass('currently-inspected-channel')) {
+            changeInspectedChannelListItem(listItem);
+        } else {
+            // Same channel - close it
+            closeInspectedChannel(listItem);
+        }
+    }).on('click', '.channel-programmes-day-list > li > a', function() {
+        const programmeListItem = $(this).closest('li');
+        const programmeImageUrl = programmeListItem.attr('data-programme-image');
+        const programmeDescription = programmeListItem.attr('data-programme-description');
+
+        programmeListItem.parent().parent().find('.currently-inspected-programme').removeClass('currently-inspected-programme');
+        programmeListItem.addClass('currently-inspected-programme');
+
+        tv_channels_list.showProgrammeDetails($(this), programmeImageUrl, programmeDescription);
+
+    }).on('click', '.zap-to-channel-btn', function(event) {
+        if ($(event.target).hasClass('channel-banner')) {
+            tv_channels_list.zapToChannel($(this).closest('[data-channel-name]').attr('data-channel-name'));
+        }
+    });
+});
+
+updateProgrammeDescriptionScrollPosition = utils.proxifyFunctionDeveloperMode(updateProgrammeDescriptionScrollPosition);
+changeInspectedChannelListItem = utils.proxifyFunctionDeveloperMode(changeInspectedChannelListItem);
+setCurrentChannelProgrammesListPosition = utils.proxifyFunctionDeveloperMode(setCurrentChannelProgrammesListPosition);
+scrollToChannelListItem = utils.proxifyFunctionDeveloperMode(scrollToChannelListItem);

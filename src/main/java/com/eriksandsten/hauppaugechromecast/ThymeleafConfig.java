@@ -24,7 +24,7 @@ public class ThymeleafConfig {
                 = new SpringResourceTemplateResolver();
         templateResolver.setPrefix("classpath:/templates/");
         templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setTemplateMode("HTML");
         return templateResolver;
     }
 

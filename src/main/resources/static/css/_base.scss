@@ -1,26 +1,23 @@
 
-@use 'sass:color';
-
-$color1: #9a9878;
-$color2: darkkhaki;
-$color3: darkslategray;
-$lighter-darkkhaki: color.scale(#84804b, $lightness: 50%);
-$tab-headings-border-radius: 7px;
+@use 'mixins';
+@use 'constants';
 
 html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%; // Important for clientHeight etc.
 }
 
 body {
-    background-color: $color1;
+    background-color: constants.$color1;
     font-family: Arial, sans-serif;
     line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
     color: rgba(255,255,255,.7);
-    background-color: $lighter-darkkhaki;
+    background-color: constants.$lighter-darkkhaki;
 }
 
 a {
@@ -33,12 +30,19 @@ ul {
     list-style-type: none;
 }
 
+pre {
+    font-size: 13px;
+    background-color: gray;
+    margin: 0;
+}
+
 button, input[type="submit"] {
-    padding: 10px 18px;
-    border-radius: 7px;
-    background-color: $lighter-darkkhaki;
-    border: none;
-    color: rgba(255,255,255,.7);
+  @include mixins.base-button-style(constants.$slate-gray);
+  border: none;
+
+  &:hover, .state-pressed {
+    background-color: constants.$lighter-slate-gray;
+  }
 }
 
 input[type="url"], input[type="text"] {
@@ -46,48 +50,21 @@ input[type="url"], input[type="text"] {
     border-radius: 7px;
 }
 
-@mixin resizable($axis) {
-  @if($axis == 'x') {
-    resize: horizontal;
-    overflow-x: auto;
-
-  } @else if($axis == 'y') {
-    resize: vertical;
-    overflow-y: auto;
-
-  } @else if ($axis == 'xy' or $axis == 'yx') {
-    resize: both;
-    overflow: auto;
-  }
+.hidden {
+  display: none !important;
 }
 
-@mixin fill-parent-element {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+.invisible {
+  visibility: hidden !important;
 }
 
-@mixin expand-box-size($additional-size) {
-  margin-left: -$additional-size;
-  margin-right: -$additional-size;
-  width: calc(100% + 2 * $additional-size);
+.is-being-dragged {
 }
 
 .flex-parent {
   display: flex;
-  align-items: flex-start;  /* optional */
-  gap: 1rem;                /* optional */
-}
-@mixin flex-remaining-width($needed-width-selector, $remaining-space-selector) {
-  & > #{$needed-width-selector} {
-    flex: 0 0 auto; /* take only needed width */
-  }
-
-  & > #{$remaining-space-selector} {
-    flex: 1; /* fill remaining space */
-  }
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .grid {
@@ -95,41 +72,20 @@ input[type="url"], input[type="text"] {
   grid-auto-rows: 50px;
 }
 
-.tabs {
-  & > .tab-headings {
-    background: gray;
-    border-bottom-left-radius: $tab-headings-border-radius;
-    border-bottom-right-radius: $tab-headings-border-radius;
-    overflow: hidden;
-
-    & > li {
-      display: inline-block;
-
-      &.active-tab {
-        background-color: rgba(0,0,0,.4);
-      }
-    }
+button.two-states {
+  &.state-pressed > span:first-child {
+    display: none;
   }
 
-  & > .tab-content-wrapper > li {
-    position: absolute;
-    overflow-y: scroll;
-    left: 0;
-    top: 0;
-    background-color: gainsboro;
-
-    &.active-tab {
-      z-index: 1;
-    }
+  &:not(.state-pressed) > span:last-child {
+    display: none;
   }
+}
 
-  .tab-content {
-    position: relative;
+ul.tab-headings li {
+  @include mixins.base-button-style(constants.$slate-gray, null);
 
-    h4 {
-      margin: 0;
-      background-color: goldenrod;
-      grid-column: 1 / span 4;
-    }
+  a {
+    color: rgba(255,255,255,.7);
   }
 }

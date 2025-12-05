@@ -1,0 +1,39 @@
+<div id="developer-console-resize-bar" class="resize-bar no-drag-image" draggable="true" data-resize-target="#developer-mode-messages" data-resize-target-prop="height">
+    <ul id="developer-mode-console-actions" th:with="developer_console_word=${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildStringWithoutDelimiter('developer{2}', ' [locale=en]', 'console', 'en[locale=sv-SE]')}">
+        <li class="tooltip">
+            <button id="close-developer-console-function-tooltips" class="tooltip-trigger">
+                <span class="material-symbols-sharp">ad_group_off</span>
+            </button>
+            <span class="tooltip-text" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('close', 'all', 'tooltips')}"></span>
+        </li>
+        <li class="tooltip">
+            <button id="hide-or-show-developer-console" class="two-states tooltip-trigger">
+                <span class="material-symbols-sharp">keyboard_arrow_down</span>
+                <span class="material-symbols-sharp">keyboard_arrow_up</span>
+            </button>
+            <span class="tooltip-text" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('hide', 'or', 'show', 'the[locale=en]', developer_console_word)}"></span>
+        </li>
+        <li class="tooltip">
+            <button id="clear-developer-console" class="tooltip-trigger">
+                <span class="material-symbols-sharp">backspace</span>
+            </button>
+            <span class="tooltip-text" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('clear', 'the[locale=en]', developer_console_word)}"></span>
+        </li>
+        <li id="developer-console-groups-and-messages-count">
+            <span class="material-symbols-rounded">casino</span>
+            <span class="material-symbols-rounded">chess</span>
+        </li>
+        <li id="developer-console-mouse-coords-panel" class="tooltip">
+            <button id="toggle-developer-console-mouse-coords" class="two-states tooltip-trigger">
+                <span class="material-symbols-sharp">touchpad_mouse</span>
+                <span class="material-symbols-sharp">touchpad_mouse_off</span>
+            </button>
+            <span class="tooltip-text" th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('hide', 'or', 'show', 'mouse', '-[locale=sv-SE]', 'coordinates')}"></span>
+            <div id="developer-console-mouse-coords">
+                <span id="developer-console-mouse-coords-x"></span>
+                <span id="developer-console-mouse-coords-y"></span>
+            </div>
+        </li>
+    </ul>
+</div>
+<ul id="developer-mode-messages" data-message-count="0" data-groups-count="0" th:data-anim-duration="${@environment.getProperty('app.developer_console.animation_duration')}"></ul>

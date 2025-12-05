@@ -16,8 +16,21 @@ $default-fade-animation-duration: 2s;
   animation: fadeOut $default-fade-animation-duration ease-out forwards;
 }
 
+.item-enter-anim {
+  animation: itemEnterAnim attr(data-anim-duration s) ease-out forwards;
+}
+
 @keyframes fadeOut {
   to {
     opacity: 0;
+  }
+}
+
+@keyframes itemEnterAnim {
+  from {
+    margin-top: -50px;
+  }
+  to {
+    margin-top: 0;
   }
 }

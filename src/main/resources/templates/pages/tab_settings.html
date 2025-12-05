@@ -1,8 +1,12 @@
 <th:block>
-    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('chosen', 'language')}"></h4>
+    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('chosen', 'language')}"></h4>
     <select id="language-selection">
         <option value="en" th:text="#{locale.en}"></option>
         <option value="sv-SE" th:text="#{locale.sv-SE}"></option>
     </select>
-    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildString('tv', '-[locale=sv-SE]', 'tuner')}"></h4>
+    <h4 th:text="${T(com.eriksandsten.hauppaugechromecast.utils.I18NHelper).buildCapitalizedString('tv', '-[locale=sv-SE]', 'tuner')}"></h4>
+        <div th:if="${dvbAdapter != null}" th:with="dvbAdapter = ${dvbAdapter}">
+            <span class="dvb-device-name" th:text="*{dvbAdapter.name}"></span>
+            <span class="material-symbols-rounded">devices</span>
+        </div>
 </th:block>

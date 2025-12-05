@@ -1,0 +1,13 @@
+<div class="developer-mode-called-function tooltip has-close-button is-stackable">
+    {{ capitalize (i18n 'calling') }} <button class="developer-mode-called-function-name tooltip-trigger" href="#">{{ functionName }}</button> {{ i18n 'with' 'parameters' }} <ul class="called-function-parameter-list">{{{ buildParameterListHtml functionDefinition parameters }}}</ul>
+    <div class="tooltip-text" draggable="true" style="z-index: {{ tooltipZIndex }}">
+        <ul class="tooltip-actions">
+        <button class="tooltip-pin-btn two-states">
+            <span class="material-symbols-rounded">keep_off</span>
+            <span class="material-symbols-rounded">keep</span>
+        </button>
+        <button class="tooltip-close-btn material-symbols-rounded">close_small</button>
+        </ul>
+        <pre class="developer-mode-called-function-code">{{{ functionDefFormatted.functionDefPrettyAndHighlighted }}}</pre>
+    </div>
+</div>

@@ -5,6 +5,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -20,15 +22,44 @@ public class I18NHelper {
         I18NHelper.messageSource = messageSource;
     }
 
-    public static String buildString(String... words) {
-        return joinStrings(buildWordList(words), " ");
+    public String getAllStrings() {
+        Properties properties = new Properties();
+        List<String> strings = new ArrayList<>();
+        String currentLocale = LocaleContextHolder.getLocale().toString();
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("messages_" + currentLocale + ".properties")) {
+            properties.load(inputStream);
+
+            Enumeration<?> keys = properties.propertyNames();
+
+            while (keys.hasMoreElements()) {
+                String key = (String) keys.nextElement();
+                String value = properties.getProperty(key);
+                strings.add("\"" + key + "\": \"" + value + "\"");
+            }
+
+            String a = String.join(", ", strings);
+            return "{" + a + "}";
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String buildCapitalizedString(String... words) {
+        return joinStrings(buildWordList(words, true), " ");
+    }
+
+    public static String buildCapitalizedStringWithoutDelimiter(String... words) {
+        return joinStrings(buildWordList(words, true), "");
     }
 
     public static String buildStringWithoutDelimiter(String... words) {
-        return joinStrings(buildWordList(words), "");
+        return joinStrings(buildWordList(words, false), "");
     }
 
-    private static List<String> buildWordList(String... words) {
+    private static List<String> buildWordList(String[] words, boolean capitalized) {
         final Locale currentLocale = LocaleContextHolder.getLocale();
 
         final var wordsTranslated = new java.util.ArrayList<>(Arrays.stream(words).
@@ -41,8 +72,11 @@ public class I18NHelper {
                     }
                 }).toList());
 
-        final String firstWord = wordsTranslated.getFirst();
-        wordsTranslated.set(0, firstWord.substring(0, 1).toUpperCase() + firstWord.substring(1));
+        if (capitalized) {
+            final String firstWord = wordsTranslated.getFirst();
+            wordsTranslated.set(0, firstWord.substring(0, 1).toUpperCase() + firstWord.substring(1));
+        }
+
         return wordsTranslated;
     }
 

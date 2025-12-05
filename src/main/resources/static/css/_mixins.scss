@@ -1,0 +1,75 @@
+
+@use 'constants';
+
+@mixin clearfix($selector) {
+  @if ($selector == null) {
+    @include clearfix-content();
+  } @else {
+    #{$selector}::after {
+      @include clearfix-content();
+    }
+  }
+}
+
+@mixin base-button-style($background-color, $border-radius: 7px) {
+  padding: 10px 18px;
+  background-color: $background-color;
+  color: rgba(255,255,255,.7);
+
+  @if ($border-radius) {
+    border-radius: $border-radius;
+  }
+}
+
+@mixin expand-box-size($additional-size) {
+  margin-left: -$additional-size;
+  margin-right: -$additional-size;
+  width: calc(100% + 2 * $additional-size);
+}
+
+@mixin flex-remaining-width($needed-width-selector, $remaining-space-selector) {
+  & > #{$needed-width-selector} {
+    flex: 0 0 auto; /* take only needed width */
+  }
+
+  & > #{$remaining-space-selector} {
+    flex: 1; /* fill remaining space */
+  }
+}
+
+@mixin material-symbol($glyph, $font-size) {
+  font-family: constants.$material-rounded-font;
+  font-size: $font-size;
+  content: '\e5c5';
+  pointer-events: none;
+  display: block;
+}
+
+@mixin fill-parent-element {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+@mixin clearfix-content {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+@mixin resizable($axis) {
+  @if($axis == 'x') {
+    resize: horizontal;
+    overflow-x: auto;
+
+  } @else if($axis == 'y') {
+    resize: vertical;
+    overflow-y: auto;
+
+  } @else if ($axis == 'xy' or $axis == 'yx') {
+    resize: both;
+    overflow: auto;
+  }
+}

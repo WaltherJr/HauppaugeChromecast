@@ -1,21 +1,17 @@
+import * as tab_tv_channels from '../tab_tv_channels.js';
+import * as utils from '../../utils/utils.js';
+import * as handlebars from '../../utils/handlebars.js'
 
 Handlebars.registerHelper('markIfActiveProgramme', markIfActiveProgramme);
-setInterval(function() {
-    callAppFunction('apansson', 'Refreshing channel list...');
-}, 1000 * 10/* 3 * 60 * 1000 */);
 
-function apansson() {
-    console.log('HAHA!');
-}
-
-function showProgrammeDetails(programmeAnchorElement, programmeImageUrl, programmeDescription) {
+export function showProgrammeDetails(programmeAnchorElement, programmeImageUrl, programmeDescription) {
     const listItem = programmeAnchorElement.closest('li').parent().closest('li');
     const alreadyInspectedProgrammeInfoBox = listItem.find('p.currently-inspected-programme-description');
-    const fadeAnimationDuration = document.app_config.programme_info_fade_animation.duration;
-    const fadeAnimationInteger = cssFloatToInteger(fadeAnimationDuration);
+    const fadeAnimationDuration = document.app_config.animations.programme_info_fade_animation.duration;
+    const fadeAnimationInteger = utils.cssFloatToInteger(fadeAnimationDuration);
 
-    getJSON(`/programme-image?imageUrl=${encodeURIComponent(programmeImageUrl)}`).then((newImageDimensions) => {
-        alreadyInspectedProgrammeInfoBox.css('animation-duration', fadeAnimationDuration).removeClass('fade-out fade-in').addClass('fade-out');
+    utils.getJson(`/programme-image?imageUrl=${encodeURIComponent(programmeImageUrl)}`).then((newImageDimensions) => {
+        alreadyInspectedProgrammeInfoBox.css('animation-duration', `${fadeAnimationDuration}s`).removeClass('fade-out fade-in').addClass('fade-out');
 
         setTimeout(function() {
             alreadyInspectedProgrammeInfoBox.text('');
@@ -31,7 +27,7 @@ function showProgrammeDetails(programmeAnchorElement, programmeImageUrl, program
     });
 }
 
-function markIfActiveProgramme(nowTimestamp, channelProgrammeListItem, channelProgrammesDayList, iteratedProgrammeIndex) {
+export function markIfActiveProgramme(nowTimestamp, channelProgrammeListItem, channelProgrammesDayList, iteratedProgrammeIndex) {
     const nextProgrammeStartTime = iteratedProgrammeIndex < channelProgrammesDayList.length - 1 ? new Date(channelProgrammesDayList[iteratedProgrammeIndex + 1].time) : undefined;
     const iteratedProgrammeStartTime = new Date(channelProgrammeListItem.time);
 
@@ -42,7 +38,7 @@ function markIfActiveProgramme(nowTimestamp, channelProgrammeListItem, channelPr
     return '';
 }
 
-function clearInspectedProgrammeImages() {
+export function clearInspectedProgrammeImages() {
     $('#inspected-programme-image-container > img').remove(); // TODO: add animations etc.
 }
 
@@ -162,31 +158,61 @@ function loadChannelLists(channelListsJson) {
 
 }
 
-async function createMainChannelListHtml(channelList, channelListHeight) {
-    return renderHandlebarsTemplate('/js/templates/main-channel-list.hbs', {channels: channelList, channelListHeight: channelListHeight},
+export function loadTestVideo() {
+    const testVideoUrl = document.getElementById("test-video-url").value;
+    const testVideoMimeType = document.getElementById("test-video-mime-type").value;
+    const mediaInfo = new chrome.cast.media.MediaInfo(testVideoUrl, testVideoMimeType);
+    var request = new chrome.cast.media.LoadRequest(mediaInfo);
+    cast.framework.CastContext.getInstance().getCurrentSession().loadMedia(request).then(
+        function() { console.log('Load succeed'); },
+        function(errorCode) { console.log('Error code: ' + errorCode); });
+}
+
+export function setSelectedChannel() {
+    const queryParams = new URLSearchParams(window.location.search);
+    const selectedChannel = queryParams.get('selectedChannel');
+
+    if (selectedChannel) {
+        tab_tv_channels.scrollToChannelListItem($('#tab-tv-channels'), $(`#main-channel-list > li[data-channel-name="${selectedChannel}"]`));
+
+    } else if (localStorage.getItem('lastSelectedChannel')) {
+        const selectedChannelName = localStorage.getItem('lastSelectedChannel')
+        tab_tv_channels.scrollToChannelListItem($('#tab-tv-channels'), $(`#main-channel-list > li[data-channel-name="${selectedChannelName}"]`));
+        utils.updatePageQueryParameter('selectedChannel', selectedChannelName);
+    }
+}
+
+export function computeMaxHeightOfChannelListItem(listItem) {
+    const programmesListHeight = listItem.find('.channel-programmes-list-container').outerHeight(true); // Include margins
+    const inspectedProgrammeDescription = listItem.find('.currently-inspected-programme-description').outerHeight(true);
+    const newHeight = Math.max(programmesListHeight, inspectedProgrammeDescription);
+
+    return Math.round(newHeight) + 20;
+}
+
+export async function createMainChannelListHtml(channelList, channelListHeight) {
+    return handlebars.renderHandlebarsTemplate('/js/templates/main-channel-list.hbs', {channels: channelList, channelListHeight: channelListHeight},
         [{name: 'channelProgrammesList', url: '/js/templates/channel-programmes-list.hbs'}]);
 }
 
-function zapToChannel(requestedChannelName) {
+export function zapToChannel(requestedChannelName) {
     alert('DEJSAN');
-    putJSON('/current-channel', JSON.stringify({channelName: requestedChannelName}))
+    putJSON('/current-channel', {channelName: requestedChannelName})
         .then(response => {
             console.log(response);
         });
 }
 
-async function populateChannelList(datesToFetch, channelListHeight) {
+export async function populateChannelList(datesToFetch, channelListHeight) {
     await Promise.all(datesToFetch
-        .map(date => getJSON(`/allente-epg?date=${date}`)))
+        .map(date => utils.getJson(`/allente-epg?date=${date}`)))
         .then(async results => {
             const channelLists = loadChannelLists(results);
             const mainChannelList = $('#main-channel-list');
             const updatedMainChannelList = $(await createMainChannelListHtml(channelLists, channelListHeight));
             mainChannelList.replaceWith(updatedMainChannelList);
 
-            setCurrentChannelProgrammesListPosition(updatedMainChannelList);
-
-
+            tab_tv_channels.setCurrentChannelProgrammesListPosition(updatedMainChannelList);
 
         }).catch(error => {
             console.error('There was a problem with one of the fetch operations:', error);
